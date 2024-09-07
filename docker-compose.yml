@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+    tenant:
+      build:
+        context: ./tenant
+        dockerfile: Dockerfile
+      ports:
+        - "3000:3000"
+      depends_on:
+        - db
+      environment:
+        - DB_HOST=db
+        - DB_USER=root
+        - DB_PASSWORD=rootpassword
+        - DB_NAME=DB
+
+    db:
+      image: mysql:8.0
+      environment:
+        - MYSQL_ROOT_PASSWORD=rootpassword
+        - MYSQL_DATABASE=DB
+      volumes:
+        - ./schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+        - ./data.sql:/docker-entrypoint-initdb.d/2-data.sql
+        - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
