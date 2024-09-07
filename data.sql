@@ -6,9 +6,9 @@ INSERT INTO PropertyManager (first_name, last_name, email, manager_password, pho
 
 -- Insert test data into Property table
 INSERT INTO Property (property_address, rental_price, bedrooms, bathrooms, manager_id) VALUES
-('123 Main St, Cityville, ST 12345', 1500.00, 3, 2, 1),
-('456 Elm St, Townsburg, ST 67890', 1200.00, 2, 1, 1),
-('789 Oak Ave, Villageton, ST 13579', 1800.00, 4, 3, 2);
+('123 Main St, Cityville', 1500.00, 3, 2, 1),
+('456 Elm St, Townsburg', 1200.00, 2, 1, 1),
+('789 Oak Ave, Villageton', 1800.00, 4, 3, 2);
 
 -- Insert test data into User table
 INSERT INTO User (first_name, last_name, email, user_password, phone_number, property_id) VALUES
