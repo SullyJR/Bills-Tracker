@@ -171,5 +171,5 @@ app.get('/logout', (req, res) => {
 PORT = 3001;
 
 app.listen(PORT, () => {
-    console.log(`Server is running at http://localhost:${PORT}`);
+    console.log(`Manager server is running at http://localhost:${PORT}`);
 });
