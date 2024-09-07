@@ -67,44 +67,6 @@ app.get('/register', (req, res) => {
 //   });
 
 
-  app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    const query = 'SELECT * FROM User WHERE email = ? AND user_password = ?';
-    
-    db.query(query, [email, password], (err, results) => {
-        if (err) {
-            console.error('Database query error:', err);
-            return res.render('index', { 
-                title: 'Login',
-                welcomeMessage: 'Welcome to Rental',
-                loginAction: '/login',
-                signInButtonText: 'Sign In',
-                //registerButtonText: 'Register New Account',
-                errorMessage: 'An error occurred. Please try again.'
-            });
-        }
-        
-        if (results.length > 0) {
-            // User found, render success page
-            res.render('success', { 
-                title: 'Login Successful',
-                message: 'You have successfully logged in!'
-
-            });
-        } else {
-            // User not found or incorrect password
-            res.render('index', { 
-                title: 'Login',
-                welcomeMessage: 'Welcome to Rental',
-                loginAction: '/login',
-                signInButtonText: 'Sign In',
-                //registerButtonText: 'Register New Account',
-                errorMessage: 'Invalid email or password.'
-            });
-        }
-    });
-});
-
 app.post('/register', (req, res) => {
     const { first_name, last_name, email, password, phone_number, property_id } = req.body;
     
@@ -124,54 +86,65 @@ app.post('/register', (req, res) => {
     });
 });
 
-// app.get('/dashboard', (req, res) => {
-//     if (!req.session.userId) {
-//         return res.redirect('/');
-//     }
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+    const query = 'SELECT * FROM User WHERE email = ? AND user_password = ?';
+    
+    db.query(query, [email, password], (err, results) => {
+        if (err) {
+            console.error('Database query error:', err);
+            return res.render('index', { 
+                title: 'Login',
+                welcomeMessage: 'Welcome to Rental',
+                loginAction: '/login',
+                signInButtonText: 'Sign In',
+                errorMessage: 'An error occurred. Please try again.'
+            });
+        }
+        
+        if (results.length > 0) {
+            // User found, redirect to dashboard
+            res.redirect(`/dashboard/${results[0].user_id}`);
+        } else {
+            // User not found or incorrect password
+            res.render('index', { 
+                title: 'Login',
+                welcomeMessage: 'Welcome to Rental',
+                loginAction: '/login',
+                signInButtonText: 'Sign In',
+                errorMessage: 'Invalid email or password.'
+            });
+        }
+    });
+});
 
-//     const userQuery = 'SELECT * FROM User WHERE user_id = ?';
-//     const propertyQuery = 'SELECT * FROM Property WHERE property_id = (SELECT property_id FROM User WHERE user_id = ?)';
-//     const billsQuery = 'SELECT * FROM Bill WHERE user_id = ?';
+app.get('/dashboard/:userId', (req, res) => {
+    const userId = req.params.userId;
+    const userQuery = 'SELECT * FROM User WHERE user_id = ?';
+    const billsQuery = 'SELECT * FROM Bill WHERE user_id = ?';
 
-//     db.query(userQuery, [req.session.userId], (err, userResults) => {
-//         if (err) {
-//             console.error('Error fetching user data:', err);
-//             return res.status(500).send('An error occurred');
-//         }
+    db.query(userQuery, [userId], (err, userResults) => {
+        if (err) {
+            console.error('Error fetching user data:', err);
+            return res.status(500).send('An error occurred');
+        }
 
-//         const user = userResults[0];
+        const user = userResults[0];
 
-//         db.query(propertyQuery, [req.session.userId], (err, propertyResults) => {
-//             if (err) {
-//                 console.error('Error fetching property data:', err);
-//                 return res.status(500).send('An error occurred');
-//             }
+        db.query(billsQuery, [userId], (err, billsResults) => {
+            if (err) {
+                console.error('Error fetching bills data:', err);
+                return res.status(500).send('An error occurred');
+            }
 
-//             const property = propertyResults[0];
-
-//             db.query(billsQuery, [req.session.userId], (err, billsResults) => {
-//                 if (err) {
-//                     console.error('Error fetching bills data:', err);
-//                     return res.status(500).send('An error occurred');
-//                 }
-
-//                 res.render('dashboard', { user, property, bills: billsResults });
-//             });
-//         });
-//     });
-// });
-
-// app.post('/logout', (req, res) => {
-//     req.session.destroy((err) => {
-//         if (err) {
-//             console.error('Error destroying session:', err);
-//         }
-//         res.redirect('/');
-//     });
-// });
+            res.render('dashboard', { user, bills: billsResults });
+        });
+    });
+});
 
 
+PORT = 3000;
 
-app.listen(3000, () => {
-  console.log('Tenant server running on port 3000');
+app.listen(PORT, () => {
+    console.log(`Server running at http://localhost:${PORT}`);
 });
