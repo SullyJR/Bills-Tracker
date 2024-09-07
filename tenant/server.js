@@ -13,12 +13,12 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static('public'));
 
-app.use(session({
-    secret: 'your_session_secret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: true } // set to true if using https
-}));
+// app.use(session({
+//     secret: 'your_session_secret',
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: { secure: true } // set to true if using https
+// }));
 
 
 // Database connection
@@ -124,52 +124,54 @@ app.post('/register', (req, res) => {
     });
 });
 
-app.get('/dashboard', (req, res) => {
-    if (!req.session.userId) {
-        return res.redirect('/');
-    }
+// app.get('/dashboard', (req, res) => {
+//     if (!req.session.userId) {
+//         return res.redirect('/');
+//     }
 
-    const userQuery = 'SELECT * FROM User WHERE user_id = ?';
-    const propertyQuery = 'SELECT * FROM Property WHERE property_id = (SELECT property_id FROM User WHERE user_id = ?)';
-    const billsQuery = 'SELECT * FROM Bill WHERE user_id = ?';
+//     const userQuery = 'SELECT * FROM User WHERE user_id = ?';
+//     const propertyQuery = 'SELECT * FROM Property WHERE property_id = (SELECT property_id FROM User WHERE user_id = ?)';
+//     const billsQuery = 'SELECT * FROM Bill WHERE user_id = ?';
 
-    db.query(userQuery, [req.session.userId], (err, userResults) => {
-        if (err) {
-            console.error('Error fetching user data:', err);
-            return res.status(500).send('An error occurred');
-        }
+//     db.query(userQuery, [req.session.userId], (err, userResults) => {
+//         if (err) {
+//             console.error('Error fetching user data:', err);
+//             return res.status(500).send('An error occurred');
+//         }
 
-        const user = userResults[0];
+//         const user = userResults[0];
 
-        db.query(propertyQuery, [req.session.userId], (err, propertyResults) => {
-            if (err) {
-                console.error('Error fetching property data:', err);
-                return res.status(500).send('An error occurred');
-            }
+//         db.query(propertyQuery, [req.session.userId], (err, propertyResults) => {
+//             if (err) {
+//                 console.error('Error fetching property data:', err);
+//                 return res.status(500).send('An error occurred');
+//             }
 
-            const property = propertyResults[0];
+//             const property = propertyResults[0];
 
-            db.query(billsQuery, [req.session.userId], (err, billsResults) => {
-                if (err) {
-                    console.error('Error fetching bills data:', err);
-                    return res.status(500).send('An error occurred');
-                }
+//             db.query(billsQuery, [req.session.userId], (err, billsResults) => {
+//                 if (err) {
+//                     console.error('Error fetching bills data:', err);
+//                     return res.status(500).send('An error occurred');
+//                 }
 
-                res.render('dashboard', { user, property, bills: billsResults });
-            });
-        });
-    });
-});
+//                 res.render('dashboard', { user, property, bills: billsResults });
+//             });
+//         });
+//     });
+// });
 
-app.post('/logout', (req, res) => {
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('Error destroying session:', err);
-        }
-        res.redirect('/');
-    });
-});
+// app.post('/logout', (req, res) => {
+//     req.session.destroy((err) => {
+//         if (err) {
+//             console.error('Error destroying session:', err);
+//         }
+//         res.redirect('/');
+//     });
+// });
+
+
 
 app.listen(3000, () => {
-  console.log('Tenant server is running at http://localhost:3000');
+  console.log('Tenant server running on port 3000');
 });
