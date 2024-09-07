@@ -81,7 +81,6 @@ app.post('/register', (req, res) => {
     });
 });
 
-// Add this new route to your server.js file
 
 app.post('/add-property', isAuthenticated, (req, res) => {
     const { property_address, rental_price, bedrooms, bathrooms } = req.body;
