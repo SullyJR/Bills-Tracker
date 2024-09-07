@@ -16,6 +16,7 @@ app.use(express.static('public'));
 
 // Session middleware
 app.use(session({
+    name: 'tenant-session',
     secret: 'cosc349A1',
     resave: false,
     saveUninitialized: true,
@@ -125,10 +126,10 @@ app.post('/login', (req, res) => {
 });
 
 app.post('/add-bill', isAuthenticated, (req, res) => {
-    const { user_id, property_id, bill_type, amount, due_date, paid } = req.body;
-    const query = 'INSERT INTO Bill (bill_type, amount, due_date, paid, user_id, property_id) VALUES (?, ?, ?, ?, ?, ?)';
+    const { user_id, property_id, bill_type, amount, due_date} = req.body;
+    const query = 'INSERT INTO Bill (bill_type, amount, due_date, paid, user_id, property_id) VALUES (?, ?, ?, false, ?, ?)';
 
-    db.query(query, [bill_type, amount, due_date, paid, user_id, property_id], (err, result) => {
+    db.query(query, [bill_type, amount, due_date, user_id, property_id], (err, result) => {
         if (err) {
             console.error('Error adding bill:', err);
             return res.status(500).send('An error occurred while adding the bill');
