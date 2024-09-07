@@ -15,10 +15,11 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static('public'));
 
 app.use(session({
+    name: 'manager-session',
     secret: 'COSC349A1Manager',
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false } 
+    cookie: { secure: false }
 }));
 
 // Middleware to check if user is authenticated
@@ -149,15 +150,52 @@ app.post('/add-property', isAuthenticated, (req, res) => {
     });
 });
 
+app.post('/add-bill', isAuthenticated, (req, res) => {
+    const { propertyId, billType, amount, dueDate, userId } = req.body;
+    
+    if (userId === 'all') {
+        // Add bill for all tenants of the property
+        const getUsersQuery = 'SELECT user_id FROM User WHERE property_id = ?';
+        db.query(getUsersQuery, [propertyId], (err, users) => {
+            if (err) {
+                console.error('Error fetching users:', err);
+                return res.status(500).json({ success: false, message: 'Error adding bill' });
+            }
+            
+            const insertBillQuery = 'INSERT INTO Bill (bill_type, amount, due_date, paid, user_id, property_id) VALUES ?';
+            const values = users.map(user => [billType, amount, dueDate, false, user.user_id, propertyId]);
+            
+            db.query(insertBillQuery, [values], (err, result) => {
+                if (err) {
+                    console.error('Error adding bills:', err);
+                    return res.status(500).json({ success: false, message: 'Error adding bills' });
+                }
+                res.json({ success: true, message: 'Bills added successfully' });
+            });
+        });
+    } else {
+        // Add bill for a specific tenant
+        const insertBillQuery = 'INSERT INTO Bill (bill_type, amount, due_date, paid, user_id, property_id) VALUES (?, ?, ?, false, ?, ?)';
+        db.query(insertBillQuery, [billType, amount, dueDate, userId, propertyId], (err, result) => {
+            if (err) {
+                console.error('Error adding bill:', err);
+                return res.status(500).json({ success: false, message: 'Error adding bill' });
+            }
+            res.json({ success: true, message: 'Bill added successfully' });
+        });
+    }
+});
+
+
 app.get('/dashboard', isAuthenticated, (req, res) => {
     const managerId = req.session.managerId;
-    
+
     // Query to get manager details
     const managerQuery = 'SELECT * FROM PropertyManager WHERE manager_id = ?';
-    
+
     // Query to get properties managed by this manager
     const propertiesQuery = 'SELECT * FROM Property WHERE manager_id = ?';
-    
+
     // Query to get users for each property
     const usersQuery = 'SELECT u.* FROM User u JOIN Property p ON u.property_id = p.property_id WHERE p.manager_id = ?';
 
