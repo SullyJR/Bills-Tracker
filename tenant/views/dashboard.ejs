@@ -33,7 +33,7 @@
                             <% bills.forEach(bill => { %>
                                 <tr>
                                     <td><%= bill.bill_type %></td>
-                                    <td>$<%= bill.amount.toFixed(2) %></td>
+                                    <td>$<%= bill.amount %></td>
                                     <td><%= new Date(bill.due_date).toLocaleDateString() %></td>
                                     <td><%= bill.paid ? 'Paid' : 'Unpaid' %></td>
                                 </tr>
