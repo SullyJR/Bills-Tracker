@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header>
+            <h1>Welcome, <%= manager.first_name %> <%= manager.last_name %></h1>
+            <a href="/logout" class="logout-btn">Logout</a>
+        </header>
+        
+        <section class="personal-info">
+            <h2>Personal Information</h2>
+            <p>Email: <%= manager.email %></p>
+            <p>Phone: <%= manager.phone_number %></p>
+            <p>Company: <%= manager.company %></p>
+        </section>
+
+        <section class="properties">
+            <h2>Your Properties</h2>
+            <% if (properties.length > 0) { %>
+                <% properties.forEach(property => { %>
+                    <div class="property-card">
+                        <h3><%= property.property_address %></h3>
+                        <p>Rental Price: $<%= property.rental_price %></p>
+                        <p>Bedrooms: <%= property.bedrooms %></p>
+                        <p>Bathrooms: <%= property.bathrooms %></p>
+                        
+                        <h4>Tenants:</h4>
+                        <% if (property.users && property.users.length > 0) { %>
+                            <ul>
+                                <% property.users.forEach(user => { %>
+                                    <li><%= user.first_name %> <%= user.last_name %> - <%= user.email %></li>
+                                <% }); %>
+                            </ul>
+                        <% } else { %>
+                            <p>No tenants currently assigned to this property.</p>
+                        <% } %>
+                    </div>
+                <% }); %>
+            <% } else { %>
+                <p>You don't have any properties assigned yet.</p>
+            <% } %>
+        </section>
+    </div>
+</body>
+</html>

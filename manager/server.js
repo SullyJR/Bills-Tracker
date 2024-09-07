@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const session = require('express-session');
 
 const app = express();
 app.use(cors());
@@ -12,6 +13,22 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static('public'));
+
+app.use(session({
+    secret: 'COSC349A1Manager',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false } 
+}));
+
+// Middleware to check if user is authenticated
+const isAuthenticated = (req, res, next) => {
+    if (req.session.managerId) {
+        next();
+    } else {
+        res.redirect('/');
+    }
+};
 
 
 // Database connection
@@ -29,7 +46,6 @@ db.connect((err) => {
     }
     console.log('Connected to database');
 });
-
 
 
 app.get('/', (req, res) => {
@@ -84,11 +100,8 @@ app.post('/login', (req, res) => {
 
         if (results.length > 0) {
             // User found, render success page
-            res.render('success', {
-                title: 'Login Successful',
-                message: 'You have successfully logged in manager!'
-
-            });
+            req.session.managerId = results[0].manager_id;
+            res.redirect('/dashboard');
         } else {
             // User not found or incorrect password
             res.render('index', {
@@ -99,6 +112,59 @@ app.post('/login', (req, res) => {
                 errorMessage: 'Invalid email or password.'
             });
         }
+    });
+});
+
+app.get('/dashboard', isAuthenticated, (req, res) => {
+    const managerId = req.session.managerId;
+    
+    // Query to get manager details
+    const managerQuery = 'SELECT * FROM PropertyManager WHERE manager_id = ?';
+    
+    // Query to get properties managed by this manager
+    const propertiesQuery = 'SELECT * FROM Property WHERE manager_id = ?';
+    
+    // Query to get users for each property
+    const usersQuery = 'SELECT u.* FROM User u JOIN Property p ON u.property_id = p.property_id WHERE p.manager_id = ?';
+
+    db.query(managerQuery, [managerId], (err, managerResults) => {
+        if (err) {
+            console.error('Error fetching manager data:', err);
+            return res.status(500).send('An error occurred');
+        }
+
+        const manager = managerResults[0];
+
+        db.query(propertiesQuery, [managerId], (err, propertiesResults) => {
+            if (err) {
+                console.error('Error fetching properties data:', err);
+                return res.status(500).send('An error occurred');
+            }
+
+            db.query(usersQuery, [managerId], (err, usersResults) => {
+                if (err) {
+                    console.error('Error fetching users data:', err);
+                    return res.status(500).send('An error occurred');
+                }
+
+                // Organize users by property
+                const properties = propertiesResults.map(property => {
+                    property.users = usersResults.filter(user => user.property_id === property.property_id);
+                    return property;
+                });
+
+                res.render('dashboard', { manager, properties });
+            });
+        });
+    });
+});
+
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+        }
+        res.redirect('/');
     });
 });
 
