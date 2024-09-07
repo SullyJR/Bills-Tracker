@@ -96,5 +96,5 @@ app.get('/', (req, res) => {
 
 
 app.listen(3000, () => {
-  console.log('Tenant server running on port 3000');
+  console.log('Tenant server is running at http://localhost:3000');
 });
