@@ -35,7 +35,7 @@ console.log('Connected to database');
 app.get('/', (req, res) => {
     res.render('index', {
         title: 'Login',
-        welcomeMessage: 'Welcome to Rental',
+        welcomeMessage: 'Welcome to Tenant Portal',
         loginAction: '/login',
         signInButtonText: 'Sign In',
         registerButtonText: 'Register New Account',
