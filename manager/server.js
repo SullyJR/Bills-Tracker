@@ -115,6 +115,22 @@ app.post('/login', (req, res) => {
     });
 });
 
+app.post('/add-property', isAuthenticated, (req, res) => {
+    const { property_address, rental_price, bedrooms, bathrooms } = req.body;
+    const managerId = req.session.managerId;
+
+    const query = 'INSERT INTO Property (property_address, rental_price, bedrooms, bathrooms, manager_id) VALUES (?, ?, ?, ?, ?)';
+
+    db.query(query, [property_address, rental_price, bedrooms, bathrooms, managerId], (err, result) => {
+        if (err) {
+            console.error('Error adding property:', err);
+            // Handle error (you might want to send an error response)
+        }
+        // Redirect back to dashboard after adding property
+        res.redirect('/dashboard');
+    });
+});
+
 app.get('/dashboard', isAuthenticated, (req, res) => {
     const managerId = req.session.managerId;
     
