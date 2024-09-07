@@ -1,6 +1,10 @@
 # rental
 
-docker-compose up --build docker-compose down -v
+docker-compose up --build 
+
+docker-compose down -v
+
+# access sql db
 
 docker-compose exec db mysql -u root -p
 
