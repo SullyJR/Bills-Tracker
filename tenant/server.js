@@ -3,6 +3,7 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
+const session = require('express-session');
 
 const app = express();
 app.use(cors());
@@ -13,13 +14,22 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static('public'));
 
-// app.use(session({
-//     secret: 'your_session_secret',
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { secure: true } // set to true if using https
-// }));
+// Session middleware
+app.use(session({
+    secret: 'cosc349A1',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }
+}));
 
+// Middleware to check if user is authenticated
+const isAuthenticated = (req, res, next) => {
+    if (req.session.userId) {
+        next();
+    } else {
+        res.redirect('/');
+    }
+};
 
 // Database connection
 const db = mysql.createConnection({
@@ -27,17 +37,15 @@ const db = mysql.createConnection({
     user: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || 'rootpassword',
     database: process.env.DB_NAME || 'DB'
-  });
-
-db.connect((err) => {
-if (err) {
-    console.error('Error connecting to the database:', err);
-    return;
-}
-console.log('Connected to database');
 });
 
-
+db.connect((err) => {
+    if (err) {
+        console.error('Error connecting to the database:', err);
+        return;
+    }
+    console.log('Connected to database');
+});
 
 app.get('/', (req, res) => {
     res.render('index', {
@@ -45,9 +53,8 @@ app.get('/', (req, res) => {
         welcomeMessage: 'Welcome to Tenant Portal',
         loginAction: '/login',
         signInButtonText: 'Sign In',
-        //registerButtonText: 'Register New Account',
-        errorMessage: null // Assuming you're using connect-flash for error messages
-      });
+        errorMessage: null 
+    });
 
 });
 
@@ -62,23 +69,12 @@ app.get('/register', (req, res) => {
     });
 });
 
-// app.get('/login', (req, res) => {
-//     res.render('login', {
-//       title: 'Login',
-//       welcomeMessage: 'Welcome to Rental',
-//       loginAction: '/login',
-//       signInButtonText: 'Sign In',
-//       registerButtonText: 'Register New Account',
-//       errorMessage: req.flash('error') // Assuming you're using connect-flash for error messages
-//     });
-//   });
-
 
 app.post('/register', (req, res) => {
     const { first_name, last_name, email, password, phone_number, property_id } = req.body;
-    
+
     const query = 'INSERT INTO User (first_name, last_name, email, user_password, phone_number, property_id) VALUES (?, ?, ?, ?, ?, ?)';
-    
+
     db.query(query, [first_name, last_name, email, password, phone_number, property_id], (err, result) => {
         if (err) {
             console.error('Registration error:', err);
@@ -89,9 +85,9 @@ app.post('/register', (req, res) => {
                     console.error('Error fetching properties:', propErr);
                     properties = [];
                 }
-                return res.render('register', { 
-                    errorMessage: 'Registration failed. Please try again.', 
-                    properties: properties 
+                return res.render('register', {
+                    errorMessage: 'Registration failed. Please try again.',
+                    properties: properties
                 });
             });
         } else {
@@ -108,33 +104,28 @@ app.post('/login', (req, res) => {
     db.query(query, [email, password], (err, results) => {
         if (err) {
             console.error('Database query error:', err);
-            return res.render('index', { 
-                title: 'Login',
-                welcomeMessage: 'Welcome to Rental',
-                loginAction: '/login',
-                signInButtonText: 'Sign In',
-                errorMessage: 'An error occurred. Please try again.'
-            });
+            req.session.error = 'An error occurred. Please try again.';
+            return res.redirect('/');
         }
         
         if (results.length > 0) {
-            // User found, redirect to dashboard
-            res.redirect(`/dashboard/${results[0].user_id}`);
+            req.session.userId = results[0].user_id;
+            res.redirect('/dashboard');
         } else {
-            // User not found or incorrect password
-            res.render('index', { 
+            req.session.error = 'Invalid email or password.';
+            res.render('index', {
                 title: 'Login',
-                welcomeMessage: 'Welcome to Rental',
+                welcomeMessage: 'Welcome to Tenant Portal',
                 loginAction: '/login',
                 signInButtonText: 'Sign In',
-                errorMessage: 'Invalid email or password.'
+                errorMessage: req.session.error
             });
         }
     });
 });
 
-app.get('/dashboard/:userId', (req, res) => {
-    const userId = req.params.userId;
+app.get('/dashboard', isAuthenticated, (req, res) => {
+    const userId = req.session.userId;
     const userQuery = 'SELECT * FROM User WHERE user_id = ?';
     const billsQuery = 'SELECT * FROM Bill WHERE user_id = ?';
 
@@ -157,6 +148,14 @@ app.get('/dashboard/:userId', (req, res) => {
     });
 });
 
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+        }
+        res.redirect('/');
+    });
+});
 
 PORT = 3000;
 
