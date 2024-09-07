@@ -18,7 +18,14 @@
             <input type="email" id="email" name="email" placeholder="Email" required>
             <input type="password" id="password" name="password" placeholder="Password" required>
             <input type="tel" id="phone_number" name="phone_number" placeholder="Phone Number" required>
-            <input type="number" id="property_id" name="property_id" placeholder="Property ID" required>
+            <select id="property_id" name="property_id" required>
+                <option value="">Select a property</option>
+                <% properties.forEach(function(property) { %>
+                    <option value="<%= property.property_id %>">
+                        <%= property.property_address %> - <%= property.bedrooms %> bedroom(s) - $<%= property.rental_price %>/month
+                    </option>
+                <% }); %>
+            </select>
             <button type="submit" class="register-btn">Create Account</button>
         </form>
         <p>Already have an account? <a href="/">Login here</a></p>

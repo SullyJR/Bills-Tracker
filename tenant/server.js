@@ -52,7 +52,14 @@ app.get('/', (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-    res.render('register', { errorMessage: null });
+    const query = 'SELECT * FROM Property';
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Error fetching properties:', err);
+            return res.render('register', { errorMessage: 'Failed to load properties. Please try again.', properties: [] });
+        }
+        res.render('register', { errorMessage: null, properties: results });
+    });
 });
 
 // app.get('/login', (req, res) => {
@@ -113,14 +120,22 @@ app.post('/register', (req, res) => {
     db.query(query, [first_name, last_name, email, password, phone_number, property_id], (err, result) => {
         if (err) {
             console.error('Registration error:', err);
-            return res.render('register', { errorMessage: 'Registration failed. Please try again.' });
+            // Fetch properties again to re-render the form
+            const propertyQuery = 'SELECT * FROM Property';
+            db.query(propertyQuery, (propErr, properties) => {
+                if (propErr) {
+                    console.error('Error fetching properties:', propErr);
+                    properties = [];
+                }
+                return res.render('register', { 
+                    errorMessage: 'Registration failed. Please try again.', 
+                    properties: properties 
+                });
+            });
+        } else {
+            console.log('Registration successful:', result);
+            res.redirect('/');
         }
-        
-        console.log('Registration successful:', result);
-        res.render('success', { 
-            title: 'Registration Successful',
-            message: 'You have successfully created an account!'
-        });
     });
 });
 
