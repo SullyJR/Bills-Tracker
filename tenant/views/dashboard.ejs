@@ -3,55 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Dashboard</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <title>Tenant Dashboard</title>
+    <link rel="stylesheet" href="/dashboard.css">
 </head>
 <body>
     <div class="dashboard-container">
         <header>
-            <h1>Welcome, <%= user.first_name %>!</h1>
-            <form action="/logout" method="POST">
-                <button type="submit" id="logoutButton">Logout</button>
-            </form>
+            <h1>Welcome, <%= user.first_name %> <%= user.last_name %></h1>
         </header>
-
-        <section id="userInfo" class="section">
-            <h2>Your Information</h2>
-            <p>Email: <%= user.email %></p>
-            <p>Phone: <%= user.phone_number %></p>
-        </section>
-
-        <section id="propertyInfo" class="section">
-            <h2>Property Details</h2>
-            <p>Address: <%= property.property_address %></p>
-            <p>Bedrooms: <%= property.bedrooms %></p>
-            <p>Bathrooms: <%= property.bathrooms %></p>
-            <p>Rental Price: $<%= property.rental_price %></p>
-        </section>
-
-        <section id="billsSection" class="section">
-            <h2>Your Bills</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Bill Type</th>
-                        <th>Amount</th>
-                        <th>Due Date</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% bills.forEach(function(bill) { %>
-                        <tr>
-                            <td><%= bill.bill_type %></td>
-                            <td>$<%= bill.amount %></td>
-                            <td><%= bill.due_date %></td>
-                            <td><%= bill.paid ? 'Paid' : 'Unpaid' %></td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </section>
+        <main>
+            <section class="user-info">
+                <h2>Your Information</h2>
+                <p>Email: <%= user.email %></p>
+                <p>Phone: <%= user.phone_number %></p>
+            </section>
+            <section class="bills">
+                <h2>Your Bills</h2>
+                <% if (bills.length > 0) { %>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Bill Type</th>
+                                <th>Amount</th>
+                                <th>Due Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% bills.forEach(bill => { %>
+                                <tr>
+                                    <td><%= bill.bill_type %></td>
+                                    <td>$<%= bill.amount.toFixed(2) %></td>
+                                    <td><%= new Date(bill.due_date).toLocaleDateString() %></td>
+                                    <td><%= bill.paid ? 'Paid' : 'Unpaid' %></td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                <% } else { %>
+                    <p>You have no bills at the moment.</p>
+                <% } %>
+            </section>
+        </main>
     </div>
 </body>
 </html>
