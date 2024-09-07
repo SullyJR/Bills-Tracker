@@ -21,6 +21,17 @@
                 <h2>Personal Information</h2>
                 <p><strong>Email:</strong> <%= manager.email %></p>
                 <p><strong>Phone:</strong> <%= manager.phone_number %></p>
+                
+                <section class="add-property">
+                    <h2>Add New Property</h2>
+                    <form action="/add-property" method="POST">
+                        <input type="text" name="property_address" placeholder="Property Address" required>
+                        <input type="number" name="rental_price" placeholder="Rental Price" step="0.01" required>
+                        <input type="number" name="bedrooms" placeholder="Number of Bedrooms" required>
+                        <input type="number" name="bathrooms" placeholder="Number of Bathrooms" step="0.5" required>
+                        <button type="submit">Add Property</button>
+                    </form>
+                </section>
             </aside>
 
             <main class="properties">

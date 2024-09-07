@@ -81,6 +81,25 @@ app.post('/register', (req, res) => {
     });
 });
 
+// Add this new route to your server.js file
+
+app.post('/add-property', isAuthenticated, (req, res) => {
+    const { property_address, rental_price, bedrooms, bathrooms } = req.body;
+    const managerId = req.session.managerId;
+
+    const query = 'INSERT INTO Property (property_address, rental_price, bedrooms, bathrooms, manager_id) VALUES (?, ?, ?, ?, ?)';
+
+    db.query(query, [property_address, rental_price, bedrooms, bathrooms, managerId], (err, result) => {
+        if (err) {
+            console.error('Error adding property:', err);
+            // You might want to send an error response to the client here
+            return res.status(500).send('Error adding property');
+        }
+        // Redirect back to dashboard after adding property
+        res.redirect('/dashboard');
+    });
+});
+
 
 app.post('/login', (req, res) => {
     const { email, password } = req.body;

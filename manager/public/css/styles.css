@@ -183,3 +183,38 @@ body.dashboard-page {
         grid-template-columns: 1fr;
     }
 }
+
+/* Add these new styles to your existing CSS file, under the "Styles for Dashboard" section */
+
+.add-property {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+}
+
+.add-property h2 {
+    margin-bottom: 1rem;
+}
+
+.add-property form {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-property input {
+    margin-bottom: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+}
+
+.add-property button {
+    padding: 0.5rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.add-property button:hover {
+    background-color: #45a049;
+}
