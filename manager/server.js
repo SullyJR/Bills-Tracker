@@ -38,10 +38,31 @@ app.get('/', (req, res) => {
         welcomeMessage: 'Welcome to Manager Portal',
         loginAction: '/login',
         signInButtonText: 'Sign In',
-        registerButtonText: 'Register New Account',
         errorMessage: null
     });
 
+});
+
+app.get('/register', (req, res) => {
+    res.render('register', { errorMessage: null });
+});
+
+app.post('/register', (req, res) => {
+    const { first_name, last_name, email, password, phone_number, company } = req.body;
+
+    const query = 'INSERT INTO PropertyManager (first_name, last_name, email, manager_password, phone_number, company) VALUES (?, ?, ?, ?, ?, ?)';
+
+    db.query(query, [first_name, last_name, email, password, phone_number, company], (err, result) => {
+        if (err) {
+            console.error('Registration error:', err);
+            return res.render('register', {
+                errorMessage: 'Registration failed. Please try again.'
+            });
+        } else {
+            console.log('Registration successful:', result);
+            res.redirect('/');
+        }
+    });
 });
 
 
@@ -57,7 +78,6 @@ app.post('/login', (req, res) => {
                 welcomeMessage: 'Welcome to Rental',
                 loginAction: '/login',
                 signInButtonText: 'Sign In',
-                registerButtonText: 'Register New Account',
                 errorMessage: 'An error occurred. Please try again.'
             });
         }
@@ -76,7 +96,6 @@ app.post('/login', (req, res) => {
                 welcomeMessage: 'Welcome to Rental',
                 loginAction: '/login',
                 signInButtonText: 'Sign In',
-                registerButtonText: 'Register New Account',
                 errorMessage: 'Invalid email or password.'
             });
         }

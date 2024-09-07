@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register New Property Manager</title>
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+    <div class="register-container">
+        <h1>Create New Property Manager Account</h1>
+        <% if (errorMessage) { %>
+            <p class="error-message"><%= errorMessage %></p>
+        <% } %>
+        <form id="registerForm" class="register-form" action="/register" method="POST">
+            <input type="text" id="first_name" name="first_name" placeholder="First Name" required>
+            <input type="text" id="last_name" name="last_name" placeholder="Last Name" required>
+            <input type="email" id="email" name="email" placeholder="Email" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
+            <input type="tel" id="phone_number" name="phone_number" placeholder="Phone Number" 
+                   pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" 
+                   maxlength="12"
+                   required>
+            <span id="phone_error" class="error-message" style="display: none;">Please enter a valid phone number</span>
+            <input type="text" id="company" name="company" placeholder="Company Name" required>
+            <button type="submit" class="register-btn">Create Account</button>
+        </form>
+        <p>Already have an account? <a href="/">Login here</a></p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const phoneInput = document.getElementById('phone_number');
+            const phoneError = document.getElementById('phone_error');
+            const form = document.getElementById('registerForm');
+
+            phoneInput.addEventListener('input', function(e) {
+                let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+                e.target.value = !x[2] ? x[1] : x[1] + '-' + x[2] + (x[3] ? '-' + x[3] : '');
+                
+                const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
+                if (!phonePattern.test(e.target.value) && e.target.value.length > 0) {
+                    phoneError.style.display = 'block';
+                    e.target.setCustomValidity('Please enter a valid phone number');
+                } else {
+                    phoneError.style.display = 'none';
+                    e.target.setCustomValidity('');
+                }
+            });
+
+            form.addEventListener('submit', function(e) {
+                if (!phoneInput.checkValidity()) {
+                    e.preventDefault();
+                    phoneError.style.display = 'block';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

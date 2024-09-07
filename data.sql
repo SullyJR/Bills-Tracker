@@ -1,7 +1,7 @@
 USE DB;
 -- Insert test data into PropertyManager table
 INSERT INTO PropertyManager (first_name, last_name, email, manager_password, phone_number, company) VALUES
-('John', 'Doe', 'john.doe@example.com', 'hashed_password_1', '555-0101', 'ABC Property Management'),
+('John', 'Doe', 'test@gmail.com', 'test', '555-0101', 'ABC Property Management'),
 ('Jane', 'Smith', 'jane.smith@example.com', 'hashed_password_2', '555-0202', 'XYZ Realty');
 
 -- Insert test data into Property table
