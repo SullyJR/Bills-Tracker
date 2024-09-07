@@ -13,6 +13,13 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static('public'));
 
+app.use(session({
+    secret: 'your_session_secret',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true } // set to true if using https
+}));
+
 
 // Database connection
 const db = mysql.createConnection({
@@ -38,10 +45,14 @@ app.get('/', (req, res) => {
         welcomeMessage: 'Welcome to Tenant Portal',
         loginAction: '/login',
         signInButtonText: 'Sign In',
-        registerButtonText: 'Register New Account',
+        //registerButtonText: 'Register New Account',
         errorMessage: null // Assuming you're using connect-flash for error messages
       });
 
+});
+
+app.get('/register', (req, res) => {
+    res.render('register', { errorMessage: null });
 });
 
 // app.get('/login', (req, res) => {
@@ -68,7 +79,7 @@ app.get('/', (req, res) => {
                 welcomeMessage: 'Welcome to Rental',
                 loginAction: '/login',
                 signInButtonText: 'Sign In',
-                registerButtonText: 'Register New Account',
+                //registerButtonText: 'Register New Account',
                 errorMessage: 'An error occurred. Please try again.'
             });
         }
@@ -87,13 +98,77 @@ app.get('/', (req, res) => {
                 welcomeMessage: 'Welcome to Rental',
                 loginAction: '/login',
                 signInButtonText: 'Sign In',
-                registerButtonText: 'Register New Account',
+                //registerButtonText: 'Register New Account',
                 errorMessage: 'Invalid email or password.'
             });
         }
     });
 });
 
+app.post('/register', (req, res) => {
+    const { first_name, last_name, email, password, phone_number, property_id } = req.body;
+    
+    const query = 'INSERT INTO User (first_name, last_name, email, user_password, phone_number, property_id) VALUES (?, ?, ?, ?, ?, ?)';
+    
+    db.query(query, [first_name, last_name, email, password, phone_number, property_id], (err, result) => {
+        if (err) {
+            console.error('Registration error:', err);
+            return res.render('register', { errorMessage: 'Registration failed. Please try again.' });
+        }
+        
+        console.log('Registration successful:', result);
+        res.render('success', { 
+            title: 'Registration Successful',
+            message: 'You have successfully created an account!'
+        });
+    });
+});
+
+app.get('/dashboard', (req, res) => {
+    if (!req.session.userId) {
+        return res.redirect('/');
+    }
+
+    const userQuery = 'SELECT * FROM User WHERE user_id = ?';
+    const propertyQuery = 'SELECT * FROM Property WHERE property_id = (SELECT property_id FROM User WHERE user_id = ?)';
+    const billsQuery = 'SELECT * FROM Bill WHERE user_id = ?';
+
+    db.query(userQuery, [req.session.userId], (err, userResults) => {
+        if (err) {
+            console.error('Error fetching user data:', err);
+            return res.status(500).send('An error occurred');
+        }
+
+        const user = userResults[0];
+
+        db.query(propertyQuery, [req.session.userId], (err, propertyResults) => {
+            if (err) {
+                console.error('Error fetching property data:', err);
+                return res.status(500).send('An error occurred');
+            }
+
+            const property = propertyResults[0];
+
+            db.query(billsQuery, [req.session.userId], (err, billsResults) => {
+                if (err) {
+                    console.error('Error fetching bills data:', err);
+                    return res.status(500).send('An error occurred');
+                }
+
+                res.render('dashboard', { user, property, bills: billsResults });
+            });
+        });
+    });
+});
+
+app.post('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error destroying session:', err);
+        }
+        res.redirect('/');
+    });
+});
 
 app.listen(3000, () => {
   console.log('Tenant server is running at http://localhost:3000');
