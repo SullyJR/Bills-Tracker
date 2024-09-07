@@ -66,7 +66,7 @@ app.post('/login', (req, res) => {
             // User found, render success page
             res.render('success', {
                 title: 'Login Successful',
-                message: 'You have successfully logged in!'
+                message: 'You have successfully logged in manager!'
 
             });
         } else {
@@ -83,7 +83,8 @@ app.post('/login', (req, res) => {
     });
 });
 
+PORT = 3001;
 
-app.listen(3000, () => {
-    console.log('Tenant server is running at http://localhost:3000');
+app.listen(PORT, () => {
+    console.log(`Server is running at http://localhost:${PORT}`);
 });
