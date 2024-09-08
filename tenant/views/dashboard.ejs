@@ -26,6 +26,7 @@
                         Not currently assigned to a property
                     <% } %>
                 </p>
+                <button id="editProfileBtn" class="edit-profile-btn">Edit Profile</button>
                 <% if (user.property_id) { %>
                     <a href="/available-properties" class="view-properties-btn">View Available Properties</a>
                 <% } %>
@@ -81,6 +82,24 @@
                 <% } %>
             </section>
         </main>
+    </div>
+
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="editProfileForm">
+                <input type="text" id="editFirstName" name="first_name" value="<%= user.first_name %>" required>
+                <input type="text" id="editLastName" name="last_name" value="<%= user.last_name %>" required>
+                <input type="email" id="editEmail" name="email" value="<%= user.email %>" required>
+                <input type="tel" id="editPhone" name="phone_number" value="<%= user.phone_number %>" 
+                        pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                        maxlength="12"
+                        required>
+                <span id="editPhoneError" class="error-message" style="display: none;">Please enter a valid phone number (format: 123-456-7890)</span>
+                <button type="submit">Save Changes</button>
+            </form>
+        </div>
     </div>
 
     <!-- Add Bill Modal -->

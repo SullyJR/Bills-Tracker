@@ -119,6 +119,39 @@ app.get('/available-properties', isAuthenticated, (req, res) => {
         });
     });
 });
+
+app.post('/update-profile', isAuthenticated, (req, res) => {
+    const userId = req.session.userId;
+    const { first_name, last_name, email, phone_number } = req.body;
+
+    // Validate phone number format
+    const phonePattern = /^\d{3}-\d{3}-\d{4}$/;
+    if (!phonePattern.test(phone_number)) {
+        return res.status(400).json({ success: false, message: 'Invalid phone number format' });
+    }
+
+    // Validate email format
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+        return res.status(400).json({ success: false, message: 'Invalid email format' });
+    }
+
+    const updateQuery = `
+        UPDATE User 
+        SET first_name = ?, last_name = ?, email = ?, phone_number = ?
+        WHERE user_id = ?
+    `;
+
+    db.query(updateQuery, [first_name, last_name, email, phone_number, userId], (err, result) => {
+        if (err) {
+            console.error('Error updating user profile:', err);
+            return res.status(500).json({ success: false, message: 'Error updating profile' });
+        }
+
+        res.json({ success: true, message: 'Profile updated successfully' });
+    });
+});
+
 app.post('/rent-property', isAuthenticated, (req, res) => {
     const userId = req.session.userId;
     const propertyId = req.body.property_id;

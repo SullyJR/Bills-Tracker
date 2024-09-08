@@ -235,3 +235,64 @@ tr:hover {
     margin: 15px 0;
     font-size: 16px;
 }
+
+
+.edit-profile-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.edit-profile-btn:hover {
+    background-color: #45a049;
+}
+
+#editProfileForm {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#editProfileForm input {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#editProfileForm button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+#editProfileForm button:hover {
+    background-color: #45a049;
+}
+
+.error-message {
+    color: #f44336;
+    font-size: 0.875rem;
+    margin-top: 4px;
+}
+
+#editProfileForm input:invalid {
+    border-color: #f44336;
+}
+
+
