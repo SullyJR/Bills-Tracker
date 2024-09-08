@@ -69,6 +69,108 @@ app.get('/register', (req, res) => {
         res.render('register', { errorMessage: null, properties: results });
     });
 });
+// Updated route to display available properties
+app.get('/available-properties', isAuthenticated, (req, res) => {
+    const userId = req.session.userId;
+    
+    // First, get the user's current property_id
+    const userQuery = 'SELECT property_id FROM User WHERE user_id = ?';
+    
+    db.query(userQuery, [userId], (err, userResults) => {
+        if (err) {
+            console.error('Error fetching user data:', err);
+            return res.status(500).send('An error occurred');
+        }
+
+        const userPropertyId = userResults[0] ? userResults[0].property_id : null;
+
+        // Now, query for available properties, excluding the user's current property
+        const propertiesQuery = `
+            SELECT 
+                p.*, 
+                COALESCE(u.tenant_count, 0) AS tenant_count
+            FROM 
+                Property p
+            LEFT JOIN (
+                SELECT 
+                    property_id, 
+                    COUNT(*) AS tenant_count
+                FROM 
+                    User
+                WHERE 
+                    property_id IS NOT NULL
+                GROUP BY 
+                    property_id
+            ) u ON p.property_id = u.property_id
+            WHERE 
+                (p.bedrooms > COALESCE(u.tenant_count, 0) OR u.tenant_count IS NULL)
+                AND p.property_id != IFNULL(?, -1)  -- Exclude user's current property
+        `;
+        
+        db.query(propertiesQuery, [userPropertyId], (err, propertiesResults) => {
+            if (err) {
+                console.error('Error fetching available properties:', err);
+                return res.status(500).send('An error occurred');
+            }
+            res.render('available-properties', { properties: propertiesResults });
+        });
+    });
+});
+app.post('/rent-property', isAuthenticated, (req, res) => {
+    const userId = req.session.userId;
+    const propertyId = req.body.property_id;
+
+    // First, check if the property is still available
+    const checkAvailabilityQuery = `
+        SELECT 
+            p.bedrooms, 
+            COALESCE(u.tenant_count, 0) AS tenant_count
+        FROM 
+            Property p
+        LEFT JOIN (
+            SELECT 
+                property_id, 
+                COUNT(*) AS tenant_count
+            FROM 
+                User
+            WHERE 
+                property_id = ?
+            GROUP BY 
+                property_id
+        ) u ON p.property_id = u.property_id
+        WHERE 
+            p.property_id = ?
+    `;
+
+    db.query(checkAvailabilityQuery, [propertyId, propertyId], (err, results) => {
+        if (err) {
+            console.error('Error checking property availability:', err);
+            return res.status(500).send('An error occurred');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('Property not found');
+        }
+
+        const { bedrooms, tenant_count } = results[0];
+
+        if (tenant_count >= bedrooms) {
+            return res.status(400).send('This property is no longer available');
+        }
+
+        // If the property is available, proceed with the rental
+        const rentQuery = 'UPDATE User SET property_id = ? WHERE user_id = ?';
+        
+        db.query(rentQuery, [propertyId, userId], (err, result) => {
+            if (err) {
+                console.error('Error renting property:', err);
+                return res.status(500).send('An error occurred');
+            }
+            res.redirect('/dashboard');
+        });
+    });
+});
+
 
 
 app.post('/register', (req, res) => {
@@ -138,6 +240,7 @@ app.post('/add-bill', isAuthenticated, (req, res) => {
     });
 });
 
+
 app.post('/pay-bill', isAuthenticated, (req, res) => {
     const { bill_id } = req.body;
     const currentDate = new Date().toISOString().slice(0, 10); // Get current date in YYYY-MM-DD format
@@ -154,8 +257,13 @@ app.post('/pay-bill', isAuthenticated, (req, res) => {
 
 app.get('/dashboard', isAuthenticated, (req, res) => {
     const userId = req.session.userId;
-    const userQuery = 'SELECT * FROM User WHERE user_id = ?';
-    const billsQuery = 'SELECT * FROM Bill WHERE user_id = ?';
+    const userQuery = `
+    SELECT User.*, Property.property_address 
+    FROM User 
+    LEFT JOIN Property ON User.property_id = Property.property_id 
+    WHERE User.user_id = ?
+    `;
+    const billsQuery = 'SELECT * FROM Bill WHERE user_id = ? ORDER BY due_date DESC';
 
     db.query(userQuery, [userId], (err, userResults) => {
         if (err) {
