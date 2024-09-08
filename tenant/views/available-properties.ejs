@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Available Properties</title>
-    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/available-properties.css">
 </head>
 <body>
-    <div class="dashboard-container">
+    <div class="container">
         <header>
             <h1>Available Properties</h1>
             <a href="/dashboard" class="back-btn">Back to Dashboard</a>
@@ -17,20 +17,28 @@
                 <% if (properties.length > 0) { %>
                     <% properties.forEach(property => { %>
                         <div class="property-card">
-                            <h3><%= property.property_address %></h3>
-                            <p><strong>Rental Price:</strong> $<%= property.rental_price %></p>
-                            <p><strong>Bedrooms:</strong> <%= property.bedrooms %></p>
-                            <p><strong>Bathrooms:</strong> <%= property.bathrooms %></p>
-                            <p><strong>Current Tenants:</strong> <%= property.tenant_count %></p>
-                            <p><strong>Available Spots:</strong> <%= property.bedrooms - property.tenant_count %></p>
-                            <form action="/rent-property" method="POST">
-                                <input type="hidden" name="property_id" value="<%= property.property_id %>">
-                                <button type="submit" class="rent-btn">Rent This Property</button>
-                            </form>
+                            <div class="property-details">
+                                <h3><%= property.property_address %></h3>
+                                <p class="price">$<%= property.rental_price %>/month</p>
+                                <div class="property-info">
+                                    <p>Bedrooms: <%= property.bedrooms %></p>
+                                    <p>Bathrooms: <%= property.bathrooms %></p>
+                                    <p>Current Tenants: <%= property.tenant_count %></p>
+                                    <p class="available-spots">
+                                        Available Spots: <%= property.bedrooms - property.tenant_count %>
+                                    </p>
+                                </div>
+                                <div class="tenant-info">
+                                    <form action="/rent-property" method="POST">
+                                        <input type="hidden" name="property_id" value="<%= property.property_id %>">
+                                        <button type="submit" class="rent-btn">Rent This Property</button>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     <% }); %>
                 <% } else { %>
-                    <p>No properties are available for rent at the moment.</p>
+                    <p class="no-properties">No properties are available for rent at the moment.</p>
                 <% } %>
             </div>
         </main>
