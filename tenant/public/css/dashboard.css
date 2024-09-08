@@ -10,15 +10,18 @@ body {
 .dashboard-container {
     max-width: 1000px;
     margin: 0 auto;
-    padding: 30px;
+    padding: 30px 0; /* Remove horizontal padding */
 }
 
-header {
+header, .info-container, .bills {
+    padding: 20px 30px; /* Add horizontal padding to these elements instead */
     background-color: #ffffff;
-    padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     margin-bottom: 30px;
+}
+
+header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -43,12 +46,24 @@ header h1 {
     background-color: #c0392b;
 }
 
-.user-info, .bills {
-    background-color: #ffffff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
+.info-container {
+    display: flex;
+    gap: 20px;
+}
+
+.user-info, .property-info {
+    flex: 1;
+    min-height: 300px; /* Adjust this value as needed */
+}
+
+.bills {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Ensure consistent height for info sections if needed */
+.user-info, .property-info {
+    min-height: 300px; /* Adjust this value as needed */
 }
 
 h2 {
@@ -59,40 +74,46 @@ h2 {
     font-size: 20px;
 }
 
-.user-info p {
+h3 {
+    color: #2c3e50;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.user-info p, .property-info p {
     margin: 15px 0;
     font-size: 16px;
 }
 
-.view-properties-btn {
+.view-properties-btn, .edit-profile-btn, #addBillBtn, .pay-btn {
     display: inline-block;
-    margin-top: 20px;
-    padding: 12px 20px;
+    padding: 10px 15px;
     background-color: #3498db;
     color: white;
     text-decoration: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
-    font-size: 16px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
 }
 
-.view-properties-btn:hover {
+.view-properties-btn:hover, .edit-profile-btn:hover, #addBillBtn:hover, .pay-btn:hover {
     background-color: #2980b9;
+}
+
+.edit-profile-btn {
+    background-color: #4CAF50;
+    margin-top: auto;
+}
+
+.edit-profile-btn:hover {
+    background-color: #45a049;
 }
 
 #addBillBtn {
     background-color: #2ecc71;
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
     margin-bottom: 20px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
 }
 
 #addBillBtn:hover {
@@ -127,132 +148,9 @@ tr:hover {
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
-.pay-btn {
-    background-color: #3498db;
-    color: white;
-    border: none;
-    padding: 8px 15px;
+.center-btn {
     text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    cursor: pointer;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-}
-
-.pay-btn:hover {
-    background-color: #2980b9;
-}
-/* Add these styles to your existing dashboard.css file */
-
-.dashboard-content {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.info-container {
-    display: flex;
-    gap: 20px;
-}
-
-.user-info, .landlord-info {
-    flex: 1;
-    background-color: #ffffff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-.bills {
-    background-color: #ffffff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .info-container {
-        flex-direction: column;
-    }
-    .dashboard-container {
-        padding: 15px;
-    }
-    
-    header {
-        flex-direction: column;
-        text-align: center;
-    }
-    
-    .logout-btn {
-        margin-top: 15px;
-    }
-    
-    table {
-        font-size: 14px;
-    }
-    
-    th, td {
-        padding: 10px;
-    }
-    .dashboard-layout {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-    }
-
-    .user-info, .landlord-info {
-        width: calc(50% - 15px);
-    }
-
-    .bills {
-        width: 100%;
-    }
-}
-
-/* Add these styles to your existing dashboard.css file */
-
-.landlord-info {
-    background-color: #ffffff;
-    padding: 25px;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
-}
-
-.landlord-info h2 {
-    color: #2c3e50;
-    border-bottom: 2px solid #ecf0f1;
-    padding-bottom: 15px;
-    margin-top: 0;
-    font-size: 20px;
-}
-
-.landlord-info p {
-    margin: 15px 0;
-    font-size: 16px;
-}
-
-
-.edit-profile-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 14px;
-    margin-top: 10px;
-    cursor: pointer;
-    border-radius: 4px;
-}
-
-.edit-profile-btn:hover {
-    background-color: #45a049;
+    margin-top: 20px;
 }
 
 #editProfileForm {
@@ -295,4 +193,38 @@ tr:hover {
     border-color: #f44336;
 }
 
+/* Responsive design */
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 15px 0;
+    }
+    
+    header, .info-container, .bills {
+        padding: 15px;
+    }
+    
+    header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .logout-btn {
+        margin-top: 15px;
+    }
+    
+    .info-container {
+        flex-direction: column;
+    }
 
+    .user-info, .property-info {
+        min-height: auto;
+    }
+    
+    table {
+        font-size: 14px;
+    }
+    
+    th, td {
+        padding: 10px;
+    }
+}

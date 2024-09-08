@@ -294,17 +294,21 @@ app.post('/pay-bill', isAuthenticated, (req, res) => {
 app.get('/dashboard', isAuthenticated, (req, res) => {
     const userId = req.session.userId;
     const userQuery = `
-        SELECT User.*, Property.property_address, 
-               PropertyManager.first_name AS landlord_first_name,
-               PropertyManager.last_name AS landlord_last_name,
-               PropertyManager.company AS landlord_company,
-               PropertyManager.email AS landlord_email,
-               PropertyManager.phone_number AS landlord_phone
-        FROM User 
-        LEFT JOIN Property ON User.property_id = Property.property_id 
-        LEFT JOIN PropertyManager ON Property.manager_id = PropertyManager.manager_id
-        WHERE User.user_id = ?
-    `;
+    SELECT User.*, 
+           Property.property_address, 
+           Property.rental_price,
+           Property.bedrooms,
+           Property.bathrooms,
+           PropertyManager.first_name AS landlord_first_name,
+           PropertyManager.last_name AS landlord_last_name,
+           PropertyManager.company AS landlord_company,
+           PropertyManager.email AS landlord_email,
+           PropertyManager.phone_number AS landlord_phone
+    FROM User 
+    LEFT JOIN Property ON User.property_id = Property.property_id 
+    LEFT JOIN PropertyManager ON Property.manager_id = PropertyManager.manager_id
+    WHERE User.user_id = ?
+`;
     const billsQuery = 'SELECT * FROM Bill WHERE user_id = ? ORDER BY due_date DESC';
 
     db.query(userQuery, [userId], (err, userResults) => {

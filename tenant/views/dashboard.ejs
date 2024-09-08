@@ -17,30 +17,30 @@
             <div class = "info-container">
             <section class="user-info">
                 <h2>Your Information</h2>
+                <p>First name: <%= user.first_name %></p>
+                <p>Last name: <%= user.last_name %></p>
                 <p>Email: <%= user.email %></p>
                 <p>Phone: <%= user.phone_number %></p>
-                <p>Address: 
-                    <% if (user.property_address) { %>
-                        <%= user.property_address %>
-                    <% } else { %>
-                        Not currently assigned to a property
-                    <% } %>
-                </p>
                 <button id="editProfileBtn" class="edit-profile-btn">Edit Profile</button>
-                <% if (user.property_id) { %>
-                    <a href="/available-properties" class="view-properties-btn">View Available Properties</a>
-                <% } %>
             </section>
 
-            <% if (user.landlord_first_name) { %>
-                <section class="landlord-info">
-                    <h2>Your Landlord</h2>
+            <section class="property-info">
+                <h2>Property Details</h2>
+                <% if (user.property_address) { %>
+                    <p>Address: <%= user.property_address %></p>
+                    <p>Rent: $<%= user.rental_price %></p>
+                    <p>Bedrooms: <%= user.bedrooms %></p>
+                    <p>Bathrooms: <%= user.bathrooms %></p>
+                    
+                    <h3>Landlord Information</h3>
                     <p>Name: <%= user.landlord_first_name %> <%= user.landlord_last_name %></p>
                     <p>Company: <%= user.landlord_company %></p>
                     <p>Email: <%= user.landlord_email %></p>
                     <p>Phone: <%= user.landlord_phone %></p>
-                </section>
-            <% } %>
+                <% } else { %>
+                    <p>Not currently assigned to a property</p>
+                <% } %>
+            </section>
         </div>
             <section class="bills">
                 <h2>Your Bills</h2>
@@ -81,6 +81,9 @@
                     <p>You have no bills at the moment.</p>
                 <% } %>
             </section>
+            <div class="center-btn">
+                <a href="/available-properties" class="view-properties-btn">View Available Properties</a>
+            </div>
         </main>
     </div>
 
