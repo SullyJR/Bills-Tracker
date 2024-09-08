@@ -18,6 +18,9 @@
                 <h2>Your Information</h2>
                 <p>Email: <%= user.email %></p>
                 <p>Phone: <%= user.phone_number %></p>
+                <% if (user.property_id) { %>
+                    <a href="/available-properties" class="view-properties-btn">View Available Properties</a>
+                <% } %>
             </section>
             <section class="bills">
                 <h2>Your Bills</h2>
