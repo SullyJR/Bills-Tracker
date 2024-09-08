@@ -21,6 +21,18 @@
     border-radius: 8px;
 }
 
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #333;
+}
+
 .close {
     color: #aaa;
     float: right;
@@ -36,30 +48,78 @@
     cursor: pointer;
 }
 
-/* Form styles */
+/* Form styles for both Edit Profile and Add Bill forms */
+#editProfileForm,
 #addBillForm {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-#addBillForm select,
-#addBillForm input,
-#addBillForm button {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+.form-row {
+    display: flex;
+    gap: 10px;
 }
 
+#editProfileForm input,
+#addBillForm input,
+#addBillForm select {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+#editProfileForm button,
 #addBillForm button {
+    padding: 8px 16px;
     background-color: #4CAF50;
     color: white;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
+    font-size: 16px;
 }
 
+#editProfileForm button:hover,
 #addBillForm button:hover {
     background-color: #45a049;
+}
+
+/* Specific styles for Add Bill form */
+#addBillForm label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+#addBillForm input[type="date"] {
+    font-family: Arial, sans-serif;
+}
+
+/* Error message styles */
+.error-message {
+    color: #f44336;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Responsive design */
+@media (max-width: 600px) {
+    .form-row {
+        flex-direction: column;
+    }
+    
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    #editProfileForm button,
+    #addBillForm button {
+        width: 100%;
+    }
 }
 
 /* Add Bill button styles */
