@@ -144,9 +144,40 @@ tr:hover {
 .pay-btn:hover {
     background-color: #2980b9;
 }
+/* Add these styles to your existing dashboard.css file */
+
+.dashboard-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.info-container {
+    display: flex;
+    gap: 20px;
+}
+
+.user-info, .landlord-info {
+    flex: 1;
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.bills {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
 
 /* Responsive design */
 @media (max-width: 768px) {
+    .info-container {
+        flex-direction: column;
+    }
     .dashboard-container {
         padding: 15px;
     }

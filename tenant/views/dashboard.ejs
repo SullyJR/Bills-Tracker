@@ -13,7 +13,8 @@
             <h1>Welcome, <%= user.first_name %> <%= user.last_name %></h1>
             <a href="/logout" class="logout-btn">Logout</a>
         </header>
-        <main>
+        <main class = "dashboard-content">
+            <div class = "info-container">
             <section class="user-info">
                 <h2>Your Information</h2>
                 <p>Email: <%= user.email %></p>
@@ -34,11 +35,12 @@
                 <section class="landlord-info">
                     <h2>Your Landlord</h2>
                     <p>Name: <%= user.landlord_first_name %> <%= user.landlord_last_name %></p>
+                    <p>Company: <%= user.landlord_company %></p>
                     <p>Email: <%= user.landlord_email %></p>
                     <p>Phone: <%= user.landlord_phone %></p>
                 </section>
             <% } %>
-            
+        </div>
             <section class="bills">
                 <h2>Your Bills</h2>
                 <button id="addBillBtn">Add New Bill</button>

@@ -27,6 +27,9 @@
                                     <p class="available-spots">
                                         Available Spots: <%= property.bedrooms - property.tenant_count %>
                                     </p>
+                                    <p class="landlord-info">
+                                        Landlord: <%= property.landlord_first_name %> <%= property.landlord_last_name %>
+                                    </p>
                                 </div>
                                     <form action="/rent-property" method="POST">
                                         <input type="hidden" name="property_id" value="<%= property.property_id %>">

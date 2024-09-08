@@ -88,9 +88,12 @@ app.get('/available-properties', isAuthenticated, (req, res) => {
         const propertiesQuery = `
             SELECT 
                 p.*, 
+                pm.first_name AS landlord_first_name,
+                pm.last_name AS landlord_last_name,
                 COALESCE(u.tenant_count, 0) AS tenant_count
             FROM 
                 Property p
+            LEFT JOIN PropertyManager pm ON p.manager_id = pm.manager_id
             LEFT JOIN (
                 SELECT 
                     property_id, 
@@ -261,6 +264,7 @@ app.get('/dashboard', isAuthenticated, (req, res) => {
         SELECT User.*, Property.property_address, 
                PropertyManager.first_name AS landlord_first_name,
                PropertyManager.last_name AS landlord_last_name,
+               PropertyManager.company AS landlord_company,
                PropertyManager.email AS landlord_email,
                PropertyManager.phone_number AS landlord_phone
         FROM User 
