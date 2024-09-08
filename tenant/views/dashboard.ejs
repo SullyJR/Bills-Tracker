@@ -30,6 +30,8 @@
                                 <th>Amount</th>
                                 <th>Due Date</th>
                                 <th>Status</th>
+                                <th>Paid Date</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,6 +41,15 @@
                                     <td>$<%= bill.amount %></td>
                                     <td><%= new Date(bill.due_date).toLocaleDateString() %></td>
                                     <td><%= bill.paid ? 'Paid' : 'Unpaid' %></td>
+                                    <td><%= bill.paid_date ? new Date(bill.paid_date).toLocaleDateString() : 'N/A' %></td>
+                                    <td>
+                                        <% if (!bill.paid) { %>
+                                            <form action="/pay-bill" method="POST">
+                                                <input type="hidden" name="bill_id" value="<%= bill.bill_id %>">
+                                                <button type="submit" class="pay-btn">Pay</button>
+                                            </form>
+                                        <% } %>
+                                    </td>
                                 </tr>
                             <% }); %>
                         </tbody>

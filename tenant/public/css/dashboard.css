@@ -58,4 +58,19 @@ tr:hover {
     background-color: #f0f0f0;
 }
 
+.pay-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 2px 2px;
+    cursor: pointer;
+}
 
+.pay-btn:hover {
+    background-color: #45a049;
+}

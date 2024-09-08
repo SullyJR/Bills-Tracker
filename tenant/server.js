@@ -138,6 +138,20 @@ app.post('/add-bill', isAuthenticated, (req, res) => {
     });
 });
 
+app.post('/pay-bill', isAuthenticated, (req, res) => {
+    const { bill_id } = req.body;
+    const currentDate = new Date().toISOString().slice(0, 10); // Get current date in YYYY-MM-DD format
+    const query = 'UPDATE Bill SET paid = true, paid_date = ? WHERE bill_id = ?';
+
+    db.query(query, [currentDate, bill_id], (err, result) => {
+        if (err) {
+            console.error('Error paying bill:', err);
+            return res.status(500).send('An error occurred while paying the bill');
+        }
+        res.redirect('/dashboard');
+    });
+});
+
 app.get('/dashboard', isAuthenticated, (req, res) => {
     const userId = req.session.userId;
     const userQuery = 'SELECT * FROM User WHERE user_id = ?';
