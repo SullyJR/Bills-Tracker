@@ -167,4 +167,40 @@ tr:hover {
     th, td {
         padding: 10px;
     }
+    .dashboard-layout {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+
+    .user-info, .landlord-info {
+        width: calc(50% - 15px);
+    }
+
+    .bills {
+        width: 100%;
+    }
+}
+
+/* Add these styles to your existing dashboard.css file */
+
+.landlord-info {
+    background-color: #ffffff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+}
+
+.landlord-info h2 {
+    color: #2c3e50;
+    border-bottom: 2px solid #ecf0f1;
+    padding-bottom: 15px;
+    margin-top: 0;
+    font-size: 20px;
+}
+
+.landlord-info p {
+    margin: 15px 0;
+    font-size: 16px;
 }

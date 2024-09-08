@@ -29,6 +29,16 @@
                     <a href="/available-properties" class="view-properties-btn">View Available Properties</a>
                 <% } %>
             </section>
+
+            <% if (user.landlord_first_name) { %>
+                <section class="landlord-info">
+                    <h2>Your Landlord</h2>
+                    <p>Name: <%= user.landlord_first_name %> <%= user.landlord_last_name %></p>
+                    <p>Email: <%= user.landlord_email %></p>
+                    <p>Phone: <%= user.landlord_phone %></p>
+                </section>
+            <% } %>
+            
             <section class="bills">
                 <h2>Your Bills</h2>
                 <button id="addBillBtn">Add New Bill</button>
