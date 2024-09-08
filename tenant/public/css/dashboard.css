@@ -74,3 +74,24 @@ tr:hover {
 .pay-btn:hover {
     background-color: #45a049;
 }
+
+/* Add these styles to your existing dashboard.css file */
+
+.user-info p {
+    margin: 10px 0;
+}
+
+.user-info .view-properties-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.user-info .view-properties-btn:hover {
+    background-color: #45a049;
+}

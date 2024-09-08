@@ -28,13 +28,11 @@
                                         Available Spots: <%= property.bedrooms - property.tenant_count %>
                                     </p>
                                 </div>
-                                <div class="tenant-info">
                                     <form action="/rent-property" method="POST">
                                         <input type="hidden" name="property_id" value="<%= property.property_id %>">
                                         <button type="submit" class="rent-btn">Rent This Property</button>
                                     </form>
                                 </div>
-                            </div>
                         </div>
                     <% }); %>
                 <% } else { %>

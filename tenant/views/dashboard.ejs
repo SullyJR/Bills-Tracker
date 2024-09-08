@@ -18,6 +18,13 @@
                 <h2>Your Information</h2>
                 <p>Email: <%= user.email %></p>
                 <p>Phone: <%= user.phone_number %></p>
+                <p>Address: 
+                    <% if (user.property_address) { %>
+                        <%= user.property_address %>
+                    <% } else { %>
+                        Not currently assigned to a property
+                    <% } %>
+                </p>
                 <% if (user.property_id) { %>
                     <a href="/available-properties" class="view-properties-btn">View Available Properties</a>
                 <% } %>

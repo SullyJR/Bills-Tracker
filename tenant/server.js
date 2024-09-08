@@ -71,35 +71,49 @@ app.get('/register', (req, res) => {
 });
 // Updated route to display available properties
 app.get('/available-properties', isAuthenticated, (req, res) => {
-    const query = `
-        SELECT 
-            p.*, 
-            COALESCE(u.tenant_count, 0) AS tenant_count
-        FROM 
-            Property p
-        LEFT JOIN (
-            SELECT 
-                property_id, 
-                COUNT(*) AS tenant_count
-            FROM 
-                User
-            WHERE 
-                property_id IS NOT NULL
-            GROUP BY 
-                property_id
-        ) u ON p.property_id = u.property_id
-        WHERE 
-            p.bedrooms > COALESCE(u.tenant_count, 0)
-        OR 
-            u.tenant_count IS NULL
-    `;
+    const userId = req.session.userId;
     
-    db.query(query, (err, results) => {
+    // First, get the user's current property_id
+    const userQuery = 'SELECT property_id FROM User WHERE user_id = ?';
+    
+    db.query(userQuery, [userId], (err, userResults) => {
         if (err) {
-            console.error('Error fetching available properties:', err);
+            console.error('Error fetching user data:', err);
             return res.status(500).send('An error occurred');
         }
-        res.render('available-properties', { properties: results });
+
+        const userPropertyId = userResults[0] ? userResults[0].property_id : null;
+
+        // Now, query for available properties, excluding the user's current property
+        const propertiesQuery = `
+            SELECT 
+                p.*, 
+                COALESCE(u.tenant_count, 0) AS tenant_count
+            FROM 
+                Property p
+            LEFT JOIN (
+                SELECT 
+                    property_id, 
+                    COUNT(*) AS tenant_count
+                FROM 
+                    User
+                WHERE 
+                    property_id IS NOT NULL
+                GROUP BY 
+                    property_id
+            ) u ON p.property_id = u.property_id
+            WHERE 
+                (p.bedrooms > COALESCE(u.tenant_count, 0) OR u.tenant_count IS NULL)
+                AND p.property_id != IFNULL(?, -1)  -- Exclude user's current property
+        `;
+        
+        db.query(propertiesQuery, [userPropertyId], (err, propertiesResults) => {
+            if (err) {
+                console.error('Error fetching available properties:', err);
+                return res.status(500).send('An error occurred');
+            }
+            res.render('available-properties', { properties: propertiesResults });
+        });
     });
 });
 app.post('/rent-property', isAuthenticated, (req, res) => {
@@ -243,7 +257,12 @@ app.post('/pay-bill', isAuthenticated, (req, res) => {
 
 app.get('/dashboard', isAuthenticated, (req, res) => {
     const userId = req.session.userId;
-    const userQuery = 'SELECT * FROM User WHERE user_id = ?';
+    const userQuery = `
+    SELECT User.*, Property.property_address 
+    FROM User 
+    LEFT JOIN Property ON User.property_id = Property.property_id 
+    WHERE User.user_id = ?
+    `;
     const billsQuery = 'SELECT * FROM Bill WHERE user_id = ? ORDER BY due_date DESC';
 
     db.query(userQuery, [userId], (err, userResults) => {
