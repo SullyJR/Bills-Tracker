@@ -247,7 +247,6 @@ app.post('/add-bill', isAuthenticated, (req, res) => {
                 console.error('Error adding bill:', err);
                 return res.status(500).json({ success: false, message: 'Error adding bill' });
             }
-            alert('Bill added successfully!');
             res.redirect('/dashboard');
         });
     }

@@ -136,34 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
         billModal.style.display = 'none';
     });
 
-    // addBillForm.addEventListener('submit', function(e) {
-    //     e.preventDefault();
-    //     const formData = new FormData(addBillForm);
-    //     const billData = Object.fromEntries(formData.entries());
-
-    //     fetch('/add-bill', {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //         },
-    //         body: JSON.stringify(billData),
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => {
-    //         if (data.success) {
-    //             alert('Bill added successfully!');
-    //             billModal.style.display = 'none';
-    //             addBillForm.reset();
-    //         } else {
-    //             alert('Error adding bill. Please try again.');
-    //         }
-    //     })
-    //     .catch((error) => {
-    //         console.error('Error:', error);
-    //         alert('An error occurred. Please try again.');
-    //     });
-    // });
-
     // Common Modal Functionality
     window.addEventListener('click', function(event) {
         if (event.target == editProfileModal) {
