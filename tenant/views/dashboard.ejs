@@ -44,7 +44,6 @@
         </div>
             <section class="bills">
                 <h2>Your Bills</h2>
-                <button id="addBillBtn">Add New Bill</button>
                 <% if (bills.length > 0) { %>
                     <table>
                         <thead>
@@ -80,6 +79,7 @@
                 <% } else { %>
                     <p>You have no bills at the moment.</p>
                 <% } %>
+                <button id="addBillBtn">Add New Bill</button>
             </section>
             <div class="center-btn">
                 <a href="/available-properties" class="view-properties-btn">View Available Properties</a>
@@ -87,23 +87,31 @@
         </main>
     </div>
 
-    <div id="editProfileModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
+<!-- Edit Profile Modal -->
+<div id="editProfileModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
             <h2>Edit Profile</h2>
-            <form id="editProfileForm">
+            <span class="close">&times;</span>
+        </div>
+        <form id="editProfileForm">
+            <div class="form-row">
                 <input type="text" id="editFirstName" name="first_name" value="<%= user.first_name %>" required>
                 <input type="text" id="editLastName" name="last_name" value="<%= user.last_name %>" required>
+            </div>
+            <div class="form-row">
                 <input type="email" id="editEmail" name="email" value="<%= user.email %>" required>
+            </div>
+            <div class="form-row">
                 <input type="tel" id="editPhone" name="phone_number" value="<%= user.phone_number %>" 
-                        pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
-                        maxlength="12"
-                        required>
-                <span id="editPhoneError" class="error-message" style="display: none;">Please enter a valid phone number (format: 123-456-7890)</span>
+                       pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}"
+                       maxlength="12"
+                       required>
                 <button type="submit">Save Changes</button>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
+</div>
 
     <!-- Add Bill Modal -->
     <div id="addBillModal" class="modal">
