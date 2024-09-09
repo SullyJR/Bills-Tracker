@@ -2,7 +2,7 @@
 
 A web application for managing bills and payments in shared living situations, built with a focus on portable deployment through virtualization. This project allows tenants to track their bills and property managers to oversee multiple properties and assign bills to tenants. By leveraging containerization technology, the Flat Bills Tracker ensures consistent performance across various computing environments. 
 
-Developed by Anthony Dong and Callum Sullivan.
+Developed by Anthony Dong (2169260) and Callum Sullivan.
 
 ## Table of Contents <!-- omit in toc -->
 - [Features](#features)
