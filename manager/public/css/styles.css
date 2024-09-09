@@ -201,6 +201,31 @@ header p {
     color: #7f8c8d;
 }
 
+
+.remove-tenant-btn {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    padding: 3px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.8em;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.remove-tenant-btn:hover {
+    background-color: #c0392b;
+}
+
+.tenants-section li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+
 .add-bill-btn {
     background-color: #3498db;
     color: white;

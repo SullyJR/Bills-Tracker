@@ -64,6 +64,49 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
+    const removeTenantBtns = document.querySelectorAll('.remove-tenant-btn');
+    removeTenantBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const userId = this.getAttribute('data-user-id');
+            const propertyId = this.getAttribute('data-property-id');
+
+            console.log('Attempting to remove tenant:', { userId, propertyId });
+            
+            if (confirm('Are you sure you want to remove this tenant from the property?')) {
+                removeTenant(userId, propertyId, this);
+            }
+        });
+    });
+
+    function removeTenant(userId, propertyId, buttonElement) {
+        fetch('/remove-tenant', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId, propertyId }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Remove the tenant from the UI
+                buttonElement.closest('li').remove();
+                alert('Tenant removed successfully!');
+            } else {
+                alert('Error removing tenant. Please try again.');
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    }
+
     // Add Bill Event Listeners
     addBillBtns.forEach(btn => {
         btn.addEventListener('click', function() {

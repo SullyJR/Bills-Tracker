@@ -150,6 +150,37 @@ app.post('/add-property', isAuthenticated, (req, res) => {
     });
 });
 
+app.post('/remove-tenant', isAuthenticated, (req, res) => {
+    const { userId, propertyId } = req.body;
+
+    console.log('Received remove tenant request:', { userId, propertyId });
+
+    if (!userId || !propertyId) {
+        return res.status(400).json({ success: false, message: 'Missing userId or propertyId' });
+    }
+
+    const updateQuery = `
+        UPDATE User 
+        SET property_id = NULL 
+        WHERE user_id = ? AND property_id = ?
+    `;
+
+    db.query(updateQuery, [userId, propertyId], (err, result) => {
+        if (err) {
+            console.error('Database error removing tenant:', err);
+            return res.status(500).json({ success: false, message: 'Database error removing tenant' });
+        }
+
+        console.log('Update result:', result);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ success: false, message: 'Tenant not found or already removed' });
+        }
+
+        res.json({ success: true, message: 'Tenant removed successfully' });
+    });
+});
+
 app.post('/update-profile', isAuthenticated, (req, res) => {
     const { first_name, last_name, email, phone_number, company } = req.body;
     const managerId = req.session.managerId;

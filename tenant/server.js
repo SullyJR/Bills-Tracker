@@ -212,22 +212,17 @@ app.post('/rent-property', isAuthenticated, (req, res) => {
 app.post('/register', (req, res) => {
     const { first_name, last_name, email, password, phone_number, property_id } = req.body;
 
+    // If property_id is an empty string, set it to NULL
+    const propertyIdValue = property_id === '' ? null : property_id;
+
     const query = 'INSERT INTO User (first_name, last_name, email, user_password, phone_number, property_id) VALUES (?, ?, ?, ?, ?, ?)';
 
-    db.query(query, [first_name, last_name, email, password, phone_number, property_id], (err, result) => {
+    db.query(query, [first_name, last_name, email, password, phone_number, propertyIdValue], (err, result) => {
         if (err) {
             console.error('Registration error:', err);
-            // Fetch properties again to re-render the form
-            const propertyQuery = 'SELECT * FROM Property';
-            db.query(propertyQuery, (propErr, properties) => {
-                if (propErr) {
-                    console.error('Error fetching properties:', propErr);
-                    properties = [];
-                }
-                return res.render('register', {
-                    errorMessage: 'Registration failed. Please try again.',
-                    properties: properties
-                });
+            return res.render('register', {
+                errorMessage: 'Registration failed. Please try again.',
+                properties: [] // You might want to fetch properties again here
             });
         } else {
             console.log('Registration successful:', result);

@@ -22,8 +22,8 @@
                    maxlength="12"
                    required>
             <span id="phone_error" class="error-message" style="display: none;">Please enter a valid phone number</span>
-            <select id="property_id" name="property_id" required>
-                <option value="">Select a property</option>
+            <select id="property_id" name="property_id">
+                <option value="">Select a property (optional)</option>
                 <% properties.forEach(function(property) { %>
                     <option value="<%= property.property_id %>">
                         <%= property.property_address %>

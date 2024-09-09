@@ -55,7 +55,10 @@
                                     <% if (property.users && property.users.length > 0) { %>
                                         <ul>
                                             <% property.users.forEach(user => { %>
-                                                <li data-user-id="<%= user.user_id %>"><%= user.last_name %> - <%= user.email %></li>
+                                                <li data-user-id="<%= user.user_id %>">
+                                                    <%= user.last_name %> - <%= user.email %>
+                                                    <button class="remove-tenant-btn" data-user-id="<%= user.user_id %>" data-property-id="<%= property.property_id %>">Remove</button>
+                                                </li>
                                             <% }); %>
                                         </ul>
                                     <% } else { %>

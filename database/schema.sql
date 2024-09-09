@@ -36,7 +36,7 @@ CREATE TABLE User (
     email VARCHAR(255) UNIQUE NOT NULL,
     user_password VARCHAR(255) NOT NULL,
     phone_number VARCHAR(255) NOT NULL,
-    property_id INT NOT NULL,
+    property_id INT NULL,
     FOREIGN KEY (property_id) REFERENCES Property(property_id)
 ); 
 
