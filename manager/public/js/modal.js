@@ -136,8 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
         billModal.style.display = 'none';
     });
 
-<<<<<<< HEAD
-=======
     addBillForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(addBillForm);
@@ -166,7 +164,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
->>>>>>> parent of 6e27ea5 (update server for photo and change form to use POST)
     // Common Modal Functionality
     window.addEventListener('click', function(event) {
         if (event.target == editProfileModal) {

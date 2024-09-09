@@ -1,13 +1,13 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-//const bodyParser = require('body-parser');
+const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -145,8 +145,9 @@ app.post('/add-property', isAuthenticated, (req, res) => {
     db.query(query, [property_address, rental_price, bedrooms, bathrooms, managerId], (err, result) => {
         if (err) {
             console.error('Error adding property:', err);
-            return res.status(500).send('Error adding property');
+            // Handle error (you might want to send an error response)
         }
+        // Redirect back to dashboard after adding property
         res.redirect('/dashboard');
     });
 

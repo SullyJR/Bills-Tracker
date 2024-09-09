@@ -32,12 +32,11 @@
                         <input type="number" name="rental_price" placeholder="Rental Price" step="0.01" required>
                         <input type="number" name="bedrooms" placeholder="Number of Bedrooms" required>
                         <input type="number" name="bathrooms" placeholder="Number of Bathrooms" step="0.5" required>
-                        <input type="file" name="property_photo" accept=".jpg" required>
                         <button type="submit">Add Property</button>
                     </form>
                 </section>
             </aside>
-
+ 
             <main class="properties">
                 <h2>Your Properties</h2>
                 <div class="property-grid">
@@ -123,7 +122,7 @@
         <div class="modal-content">
             <span class="close">&times;</span>
             <h2>Add New Bill</h2>
-            <form id="addBillForm">
+            <form id="addBillForm" action="/add-bill" method="POST">
                 <input type="hidden" id="propertyId" name="propertyId">
                 <select id="billType" name="billType" required>
                     <option value="">Select Bill Type</option>
