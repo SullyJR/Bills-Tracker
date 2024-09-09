@@ -35,7 +35,7 @@ const isAuthenticated = (req, res, next) => {
 //Multer configuration
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'public/uploads');
+        cb(null, './public/images');
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -148,7 +148,7 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/add-property', isAuthenticated, upload.single('propertyImage'), (req, res) => {
+app.post('/add-property', isAuthenticated, upload.single('property_photo'), (req, res) => {
     const { property_address, rental_price, bedrooms, bathrooms } = req.body;
     const managerId = req.session.managerId;
     const propertyImage = req.file.filename;
@@ -156,7 +156,7 @@ app.post('/add-property', isAuthenticated, upload.single('propertyImage'), (req,
 
     const query = 'INSERT INTO Property (property_address, rental_price, bedrooms, bathrooms, manager_id, property_image) VALUES (?, ?, ?, ?, ?, ?)';
 
-    db.query(query, [property_address, rental_price, bedrooms, bathrooms, managerId, propertyImage], (err, result) => {
+    db.query(query, [property_address, rental_price, bedrooms, bathrooms, managerId, imageURL], (err, result) => {å
         if (err) {
             console.error('Error adding property:', err);
             return res.status(500).send('Error adding property');
@@ -236,7 +236,7 @@ app.post('/add-bill', isAuthenticated, (req, res) => {
                     console.error('Error adding bills:', err);
                     return res.status(500).json({ success: false, message: 'Error adding bills' });
                 }
-                res.json({ success: true, message: 'Bills added successfully' });
+                res.redirect('/dashboard');
             });
         });
     } else {
@@ -247,7 +247,8 @@ app.post('/add-bill', isAuthenticated, (req, res) => {
                 console.error('Error adding bill:', err);
                 return res.status(500).json({ success: false, message: 'Error adding bill' });
             }
-            res.json({ success: true, message: 'Bill added successfully' });
+            alert('Bill added successfully!');
+            res.redirect('/dashboard');
         });
     }
 });
