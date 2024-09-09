@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');
+const multer = require('multer');
 
 const app = express();
 app.use(cors());
@@ -30,6 +31,19 @@ const isAuthenticated = (req, res, next) => {
         res.redirect('/');
     }
 };
+
+//Multer configuration
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/uploads');
+    },
+    filename: function (req, file, cb) {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.originalname + '-' + uniqueSuffix + ".jpg");
+    }
+});
+
+const upload = multer({ storage: storage });
 
 
 // Database connection
@@ -134,21 +148,22 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/add-property', isAuthenticated, (req, res) => {
+app.post('/add-property', isAuthenticated, upload.single('propertyImage'), (req, res) => {
     const { property_address, rental_price, bedrooms, bathrooms } = req.body;
     const managerId = req.session.managerId;
+    const propertyImage = req.file.filename;
+    const imageURL = propertyImage ? `/images/${propertyImage}` : null;
 
-    const query = 'INSERT INTO Property (property_address, rental_price, bedrooms, bathrooms, manager_id) VALUES (?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO Property (property_address, rental_price, bedrooms, bathrooms, manager_id, property_image) VALUES (?, ?, ?, ?, ?, ?)';
 
-    db.query(query, [property_address, rental_price, bedrooms, bathrooms, managerId], (err, result) => {
+    db.query(query, [property_address, rental_price, bedrooms, bathrooms, managerId, propertyImage], (err, result) => {
         if (err) {
             console.error('Error adding property:', err);
-            // Handle error (you might want to send an error response)
+            return res.status(500).send('Error adding property');
         }
-        // Redirect back to dashboard after adding property
         res.redirect('/dashboard');
     });
-});
+}); 
 
 app.post('/remove-tenant', isAuthenticated, (req, res) => {
     const { userId, propertyId } = req.body;
