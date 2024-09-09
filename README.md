@@ -1,4 +1,4 @@
-# COSC349 Assignment 1: Virtualisation - Flat Bills Tracker <!-- omit in toc -->
+# COSC349 Assignment 1: Virtualisation - Flat Bills Tracker <!-- omit in toc! -->
 
 A web application for managing bills and payments in shared living situations, built with a focus on portable deployment through virtualization. This project allows tenants to track their bills and property managers to oversee multiple properties and assign bills to tenants. By leveraging containerization technology, the Flat Bills Tracker ensures consistent performance across various computing environments. 
 
