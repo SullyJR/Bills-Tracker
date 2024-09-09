@@ -1,14 +1,13 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-const bodyParser = require('body-parser');
+//const bodyParser = require('body-parser');
 const path = require('path');
 const session = require('express-session');
-const multer = require('multer');
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
@@ -31,20 +30,6 @@ const isAuthenticated = (req, res, next) => {
         res.redirect('/');
     }
 };
-
-//Multer configuration
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './public/images');
-    },
-    filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.originalname + '-' + uniqueSuffix + ".jpg");
-    }
-});
-
-const upload = multer({ storage: storage });
-
 
 // Database connection
 const db = mysql.createConnection({
@@ -148,22 +133,25 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/add-property', isAuthenticated, upload.single('property_photo'), (req, res) => {
+app.post('/add-property', isAuthenticated, (req, res) => {
+
+
     const { property_address, rental_price, bedrooms, bathrooms } = req.body;
     const managerId = req.session.managerId;
-    const propertyImage = req.file.filename;
-    const imageURL = propertyImage ? `/images/${propertyImage}` : null;
 
-    const query = 'INSERT INTO Property (property_address, rental_price, bedrooms, bathrooms, manager_id, property_image) VALUES (?, ?, ?, ?, ?, ?)';
+    const query = 'INSERT INTO Property (property_address, rental_price, bedrooms, bathrooms, manager_id) VALUES (?, ?, ?, ?, ?)';
 
-    db.query(query, [property_address, rental_price, bedrooms, bathrooms, managerId, imageURL], (err, result) => {å
+    // Execute the query
+    db.query(query, [property_address, rental_price, bedrooms, bathrooms, managerId], (err, result) => {
         if (err) {
             console.error('Error adding property:', err);
             return res.status(500).send('Error adding property');
         }
         res.redirect('/dashboard');
     });
-}); 
+
+});
+
 
 app.post('/remove-tenant', isAuthenticated, (req, res) => {
     const { userId, propertyId } = req.body;
@@ -218,7 +206,7 @@ app.post('/update-profile', isAuthenticated, (req, res) => {
 
 app.post('/add-bill', isAuthenticated, (req, res) => {
     const { propertyId, billType, amount, dueDate, userId } = req.body;
-    
+
     if (userId === 'all') {
         // Add bill for all tenants of the property
         const getUsersQuery = 'SELECT user_id FROM User WHERE property_id = ?';
@@ -227,10 +215,10 @@ app.post('/add-bill', isAuthenticated, (req, res) => {
                 console.error('Error fetching users:', err);
                 return res.status(500).json({ success: false, message: 'Error adding bill' });
             }
-            
+
             const insertBillQuery = 'INSERT INTO Bill (bill_type, amount, due_date, paid, user_id, property_id) VALUES ?';
             const values = users.map(user => [billType, amount, dueDate, false, user.user_id, propertyId]);
-            
+
             db.query(insertBillQuery, [values], (err, result) => {
                 if (err) {
                     console.error('Error adding bills:', err);

@@ -5,10 +5,10 @@ INSERT INTO PropertyManager (first_name, last_name, email, manager_password, pho
 ('Jane', 'Smith', 'jane.smith@example.com', 'hashed_password_2', '555-0202', 'XYZ Realty');
 
 -- Insert test data into Property table
-INSERT INTO Property (property_address, rental_price, bedrooms, bathrooms, manager_id) VALUES
-('123 Main St, Cityville', 1500.00, 3, 2, 1),
-('456 Elm St, Townsburg', 1200.00, 2, 1, 1),
-('789 Oak Ave, Villageton', 1800.00, 4, 3, 2);
+INSERT INTO Property (property_address, rental_price, bedrooms, bathrooms, manager_id, image_url) VALUES
+('123 Main St, Cityville', 1500.00, 3, 2, 1, '/images/house_1.jpg'),
+('456 Elm St, Townsburg', 1500.00, 3, 2, 1, '/images/house_2.jpg'),
+('789 Oak Ave, Villageton', 2000.00, 4, 3, 2, 'images/house_3.jpg');
 
 -- Insert test data into User table
 INSERT INTO User (first_name, last_name, email, user_password, phone_number, property_id) VALUES

@@ -26,6 +26,8 @@ services:
         - DB_USER=root
         - DB_PASSWORD=rootpassword
         - DB_NAME=DB
+      volumes:
+        - ./manager/public/images:/app/public/images
 
     db:
       image: mysql:8.0

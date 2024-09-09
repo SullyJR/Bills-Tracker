@@ -26,7 +26,7 @@ CREATE TABLE Property (
     bedrooms INT NOT NULL,
     bathrooms INT NOT NULL,
     manager_id INT NOT NULL,
-    property_image VARCHAR(255) NULL,
+    image_url VARCHAR(255) NULL,
     FOREIGN KEY (manager_id) REFERENCES PropertyManager(manager_id)
 );
 

@@ -407,3 +407,37 @@ button[type="submit"]:hover {
         margin: 10% auto;
     }
 }
+
+/* media styling */
+.property-image-container {
+    width: 100%;
+    height: 200px; /* Set a fixed height for all image containers */
+    overflow: hidden; /* Hide overflow if image is larger */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0; /* Light grey background for containers */
+}
+
+.property-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* This will cover the container while maintaining aspect ratio */
+}
+
+.no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #666;
+    font-style: italic;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .property-image-container {
+        height: 150px; /* Smaller height for mobile devices */
+    }
+}

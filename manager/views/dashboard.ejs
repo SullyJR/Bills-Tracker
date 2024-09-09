@@ -27,11 +27,12 @@
                 
                 <section class="add-property">
                     <h2>Add New Property</h2>
-                    <form action="/add-property" method="POST">
+                    <form action="/add-property" method="POST" enctype="multipart/form-data">
                         <input type="text" name="property_address" placeholder="Property Address" required>
                         <input type="number" name="rental_price" placeholder="Rental Price" step="0.01" required>
                         <input type="number" name="bedrooms" placeholder="Number of Bedrooms" required>
                         <input type="number" name="bathrooms" placeholder="Number of Bathrooms" step="0.5" required>
+                        <input type="file" name="property_photo" accept=".jpg" required>
                         <button type="submit">Add Property</button>
                     </form>
                 </section>
@@ -49,6 +50,13 @@
                                     <p><strong>Rental Price:</strong> $<%= property.rental_price %></p>
                                     <p><strong>Bedrooms:</strong> <%= property.bedrooms %></p>
                                     <p><strong>Bathrooms:</strong> <%= property.bathrooms %></p>
+                                </div>
+                                <div class="property-image-container">
+                                    <% if (property.image_url) { %>
+                                        <img src="<%= property.image_url %>" alt="Property Image" class="property-image" />
+                                    <% } else { %>
+                                        <div class="no-image">No image available</div>
+                                    <% } %>
                                 </div>
                                 <div class="tenants-section">
                                     <h4>Tenants:</h4>
