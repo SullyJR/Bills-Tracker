@@ -150,6 +150,26 @@ app.post('/add-property', isAuthenticated, (req, res) => {
     });
 });
 
+app.post('/update-profile', isAuthenticated, (req, res) => {
+    const { first_name, last_name, email, phone_number, company } = req.body;
+    const managerId = req.session.managerId;
+
+    const updateQuery = `
+        UPDATE PropertyManager 
+        SET first_name = ?, last_name = ?, email = ?, phone_number = ?, company = ?
+        WHERE manager_id = ?
+    `;
+
+    db.query(updateQuery, [first_name, last_name, email, phone_number, company, managerId], (err, result) => {
+        if (err) {
+            console.error('Error updating manager profile:', err);
+            return res.status(500).json({ success: false, message: 'Error updating profile' });
+        }
+
+        res.json({ success: true, message: 'Profile updated successfully' });
+    });
+});
+
 app.post('/add-bill', isAuthenticated, (req, res) => {
     const { propertyId, billType, amount, dueDate, userId } = req.body;
     

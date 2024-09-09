@@ -19,8 +19,11 @@
         <div class="dashboard-content">
             <aside class="personal-info">
                 <h2>Personal Information</h2>
-                <p><strong>Email:</strong> <%= manager.email %></p>
-                <p><strong>Phone:</strong> <%= manager.phone_number %></p>
+                <p><strong>Name:</strong> <span id="managerName"><%= manager.first_name %> <%= manager.last_name %></span></p>
+                <p><strong>Email:</strong> <span id="managerEmail"><%= manager.email %></span></p>
+                <p><strong>Phone:</strong> <span id="managerPhone"><%= manager.phone_number %></span></p>
+                <p><strong>Company:</strong> <span id="managerCompany"><%= manager.company %></span></p>
+                <button id="editProfileBtn" class="edit-profile-btn">Edit Profile</button>
                 
                 <section class="add-property">
                     <h2>Add New Property</h2>
@@ -67,6 +70,40 @@
                     <% } %>
                 </div>
             </main>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="editProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label for="editFirstName">First Name:</label>
+                    <input type="text" id="editFirstName" name="first_name" value="<%= manager.first_name %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="editLastName">Last Name:</label>
+                    <input type="text" id="editLastName" name="last_name" value="<%= manager.last_name %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email:</label>
+                    <input type="email" id="editEmail" name="email" value="<%= manager.email %>" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPhone">Phone:</label>
+                    <input type="tel" id="editPhone" name="phone_number" value="<%= manager.phone_number %>" 
+                        pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" 
+                        title="Phone number format: xxx-xxx-xxxx"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="editCompany">Company:</label>
+                    <input type="text" id="editCompany" name="company" value="<%= manager.company %>" required>
+                </div>
+                <button type="submit">Save Changes</button>
+            </form>
         </div>
     </div>
 

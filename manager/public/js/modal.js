@@ -1,11 +1,70 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('billModal');
+    // Edit Profile Functionality
+    const editProfileBtn = document.getElementById('editProfileBtn');
+    const editProfileModal = document.getElementById('editProfileModal');
+    const editProfileCloseBtn = editProfileModal.querySelector('.close');
+    const editProfileForm = document.getElementById('editProfileForm');
+    const phoneInput = document.getElementById('editPhone');
+
+    // Add Bill Functionality
+    const billModal = document.getElementById('billModal');
     const addBillBtns = document.querySelectorAll('.add-bill-btn');
-    const closeBtn = document.querySelector('.close');
-    const form = document.getElementById('addBillForm');
+    const billCloseBtn = billModal.querySelector('.close');
+    const addBillForm = document.getElementById('addBillForm');
     const propertyIdInput = document.getElementById('propertyId');
     const userIdSelect = document.getElementById('userId');
 
+    // Edit Profile Event Listeners
+    editProfileBtn.addEventListener('click', function() {
+        editProfileModal.style.display = 'block';
+    });
+
+    editProfileCloseBtn.addEventListener('click', function() {
+        editProfileModal.style.display = 'none';
+    });
+
+    // Phone number formatting
+    phoneInput.addEventListener('input', function(e) {
+        let x = e.target.value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/);
+        e.target.value = !x[2] ? x[1] : `${x[1]}-${x[2]}${x[3] ? `-${x[3]}` : ''}`;
+    });
+
+    editProfileForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(editProfileForm);
+        const data = Object.fromEntries(formData.entries());
+
+        fetch('/update-profile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                // Update the displayed information
+                document.getElementById('managerName').textContent = `${data.first_name} ${data.last_name}`;
+                document.getElementById('managerEmail').textContent = data.email;
+                document.getElementById('managerPhone').textContent = data.phone_number;
+                document.getElementById('managerCompany').textContent = data.company;
+                
+                // Close the modal
+                editProfileModal.style.display = 'none';
+                
+                alert('Profile updated successfully!');
+            } else {
+                alert('Failed to update profile. Please try again.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please try again.');
+        });
+    });
+
+    // Add Bill Event Listeners
     addBillBtns.forEach(btn => {
         btn.addEventListener('click', function() {
             const propertyId = this.getAttribute('data-property-id');
@@ -19,33 +78,26 @@ document.addEventListener('DOMContentLoaded', function() {
             const tenants = propertyCard.querySelectorAll('ul li');
             tenants.forEach(tenant => {
                 const name = tenant.textContent.split(' - ')[0];
-                const userId = tenant.getAttribute('data-user-id'); // Get user_id from data attribute
+                const userId = tenant.getAttribute('data-user-id');
                 const option = document.createElement('option');
-                option.value = userId; // Use user_id as the value
+                option.value = userId;
                 option.textContent = name;
                 userIdSelect.appendChild(option);
             });
 
-            modal.style.display = 'block';
+            billModal.style.display = 'block';
         });
     });
 
-    closeBtn.addEventListener('click', function() {
-        modal.style.display = 'none';
+    billCloseBtn.addEventListener('click', function() {
+        billModal.style.display = 'none';
     });
 
-    window.addEventListener('click', function(event) {
-        if (event.target == modal) {
-            modal.style.display = 'none';
-        }
-    });
-
-    form.addEventListener('submit', function(e) {
+    addBillForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        const formData = new FormData(form);
+        const formData = new FormData(addBillForm);
         const billData = Object.fromEntries(formData.entries());
 
-        // Send the data to the server
         fetch('/add-bill', {
             method: 'POST',
             headers: {
@@ -57,8 +109,8 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             if (data.success) {
                 alert('Bill added successfully!');
-                modal.style.display = 'none';
-                form.reset();
+                billModal.style.display = 'none';
+                addBillForm.reset();
             } else {
                 alert('Error adding bill. Please try again.');
             }
@@ -67,5 +119,15 @@ document.addEventListener('DOMContentLoaded', function() {
             console.error('Error:', error);
             alert('An error occurred. Please try again.');
         });
+    });
+
+    // Common Modal Functionality
+    window.addEventListener('click', function(event) {
+        if (event.target == editProfileModal) {
+            editProfileModal.style.display = 'none';
+        }
+        if (event.target == billModal) {
+            billModal.style.display = 'none';
+        }
     });
 });
