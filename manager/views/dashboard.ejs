@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manager Dashboard</title>
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/modal.css">
 </head>
 <body class="dashboard-page">
     <div class="dashboard-container">
@@ -41,23 +40,26 @@
                     <% if (properties && properties.length > 0) { %>
                         <% properties.forEach(property => { %>
                             <div class="property-card">
+                                <div class="color-line"></div>
                                 <h3><%= property.property_address %></h3>
-                                <p><strong>Rental Price:</strong> $<%= property.rental_price %></p>
-                                <p><strong>Bedrooms:</strong> <%= property.bedrooms %></p>
-                                <p><strong>Bathrooms:</strong> <%= property.bathrooms %></p>
-                                
-                                <h4>Tenants:</h4>
-                                <% if (property.users && property.users.length > 0) { %>
-                                    <ul>
-                                        <% property.users.forEach(user => { %>
-                                            <li data-user-id="<%= user.user_id %>"> <%= user.last_name %> - <%= user.email %></li>
-                                        <% }); %>
-                                    </ul>
-                                <% } else { %>
-                                    <p>No tenants currently assigned to this property.</p>
-                                <% } %>
+                                <div class="property-details">
+                                    <p><strong>Rental Price:</strong> $<%= property.rental_price %></p>
+                                    <p><strong>Bedrooms:</strong> <%= property.bedrooms %></p>
+                                    <p><strong>Bathrooms:</strong> <%= property.bathrooms %></p>
+                                </div>
+                                <div class="tenants-section">
+                                    <h4>Tenants:</h4>
+                                    <% if (property.users && property.users.length > 0) { %>
+                                        <ul>
+                                            <% property.users.forEach(user => { %>
+                                                <li data-user-id="<%= user.user_id %>"><%= user.last_name %> - <%= user.email %></li>
+                                            <% }); %>
+                                        </ul>
+                                    <% } else { %>
+                                        <p>No tenants currently assigned to this property.</p>
+                                    <% } %>
+                                </div>
                                 <button class="add-bill-btn" data-property-id="<%= property.property_id %>">Add Bill</button>
-                            </div>
                             </div>
                         <% }); %>
                     <% } else { %>
