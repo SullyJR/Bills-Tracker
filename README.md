@@ -22,12 +22,18 @@ Developed by Anthony Dong (2169260) and Callum Sullivan.
 - User authentication through email and password with session management
 - Tenant features:
   - Sign up and assign themselves to a property
+  - View and edit personal details
+  - View property details including the landlords contacts
   - Add and track personal bills
   - View all bills associated with their property
+  - View and change to different properties
 - Property manager features:
-  - Manage multiple properties
-  - Assign bills to individual tenants or entire properties
-  - Overview of all properties and associated tenants
+  - Sign up under a company
+  - View and edit personal details
+  - Add a new property to the database
+  - Overview and manage multiple properties
+    - Remove tenants from a property
+    - Assigning bills to individual tenants or entire properties
 
 ## Technology Stack
 
@@ -100,6 +106,12 @@ To modify the application:
     docker compose down -v
     docker compose up --build
     ```
+    
+    If a user wishes to maintain the state of the system:
+    ```
+    docker-compose down
+    docker-compose up --build
+    ```
 
 ### Database Modifications:
 - Update the schema in `schema.sql`
@@ -113,6 +125,7 @@ To modify the application:
 - To view the database tables, run:
 - `use DB;` to select the database
 - `show tables;` to list all tables
+- `SELECT * FROM <table-name>` to list the details of the table-name
 
 ## Contributing
 
