@@ -224,7 +224,7 @@ app.post('/add-bill', isAuthenticated, (req, res) => {
                     console.error('Error adding bills:', err);
                     return res.status(500).json({ success: false, message: 'Error adding bills' });
                 }
-                res.redirect('/dashboard');
+                res.json({ success: true, message: 'Bills added successfully' });
             });
         });
     } else {
@@ -235,7 +235,7 @@ app.post('/add-bill', isAuthenticated, (req, res) => {
                 console.error('Error adding bill:', err);
                 return res.status(500).json({ success: false, message: 'Error adding bill' });
             }
-            res.redirect('/dashboard');
+            res.json({ success: true, message: 'Bill added successfully' });
         });
     }
 });

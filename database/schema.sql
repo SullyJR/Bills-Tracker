@@ -26,7 +26,10 @@ CREATE TABLE Property (
     bedrooms INT NOT NULL,
     bathrooms INT NOT NULL,
     manager_id INT NOT NULL,
+<<<<<<< HEAD
     image_url VARCHAR(255) NULL,
+=======
+>>>>>>> parent of 6e27ea5 (update server for photo and change form to use POST)
     FOREIGN KEY (manager_id) REFERENCES PropertyManager(manager_id)
 );
 
