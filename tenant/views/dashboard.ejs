@@ -42,6 +42,7 @@
                 <% } %>
             </section>
         </div>
+        <% if (user.property_address) { %>
             <section class="bills">
                 <h2>Your Bills</h2>
                 <% if (bills.length > 0) { %>
@@ -81,6 +82,7 @@
                 <% } %>
                 <button id="addBillBtn">Add New Bill</button>
             </section>
+            <% } %>
             <div class="center-btn">
                 <a href="/available-properties" class="view-properties-btn">View Available Properties</a>
             </div>
