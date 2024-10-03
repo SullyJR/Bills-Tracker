@@ -33,10 +33,10 @@ const isAuthenticated = (req, res, next) => {
 
 // Database connection
 const db = mysql.createConnection({
-    host: process.env.DB_HOST || 'db',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || 'rootpassword',
-    database: process.env.DB_NAME || 'DB'
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
 });
 
 db.connect((err) => {
@@ -295,6 +295,6 @@ app.get('/logout', (req, res) => {
     });
 });
 
-app.listen(80, '0.0.0.0', () => {
+app.listen(3001, '0.0.0.0', () => {
     console.log('Manager Server listening on port 80');
 });
