@@ -295,8 +295,6 @@ app.get('/logout', (req, res) => {
     });
 });
 
-PORT = 3001;
-
-app.listen(PORT, () => {
-    console.log(`Manager server is running at http://localhost:${PORT}`);
+app.listen(80, '0.0.0.0', () => {
+    console.log('Manager Server listening on port 80');
 });

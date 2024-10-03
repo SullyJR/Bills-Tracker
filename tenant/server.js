@@ -334,8 +334,7 @@ app.get('/logout', (req, res) => {
     });
 });
 
-PORT = 3000;
 
-app.listen(PORT, () => {
-    console.log(`Tenant server running at http://localhost:${PORT}`);
+app.listen(80, '0.0.0.0', () => {
+    console.log('Server listening on port 80');
 });
