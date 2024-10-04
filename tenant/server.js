@@ -310,7 +310,7 @@ app.get('/dashboard', isAuthenticated, (req, res) => {
     db.query(userQuery, [userId], (err, userResults) => {
         if (err) {
             console.error('Error fetching user data:', err);
-            return res.status(500).send('An error occurred');
+            return res.status(500).send('An error occurred with the userQuery');
         }
 
         const user = userResults[0];
@@ -318,7 +318,7 @@ app.get('/dashboard', isAuthenticated, (req, res) => {
         db.query(billsQuery, [userId], (err, billsResults) => {
             if (err) {
                 console.error('Error fetching bills data:', err);
-                return res.status(500).send('An error occurred');
+                return res.status(500).send('An error occurred with the Bill query');
             }
 
             res.render('dashboard', { user, bills: billsResults });
