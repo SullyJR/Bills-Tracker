@@ -131,7 +131,7 @@ resource "aws_db_instance" "mysql" {
   identifier           = "mydb"
   db_name              = "myapp"
   username             = "admin"
-  password             = "Password123"  # Change this to a strong password
+  password             = "Password123" 
   skip_final_snapshot  = true
   publicly_accessible  = true 
 
@@ -145,4 +145,8 @@ output "tenant_vm_public_ip" {
 
 output "manager_vm_public_ip" {
   value = aws_instance.manager_vm.public_ip
+}
+
+output "rds_endpoint" {
+  value = aws_db_instance.mysql.endpoint
 }
