@@ -83,16 +83,34 @@ resource "aws_instance" "tenant_vm" {
   instance_type = "t2.micro"
   key_name      = "cosc349-2024"  # This is typically the key name in AWS Academy
 
-  vpc_security_group_ids = [aws_security_group.allow_web_and_ssh.id]
+  vpc_security_group_ids = [aws_security_group.allow_web_and_ssh.id, aws_security_group.allow_express_backend.id]
 
-  user_data = <<-EOF
+user_data = <<-EOF
               #!/bin/bash
-              apt-get update
-              apt-get install -y nodejs npm mysql-client
-              git clone https://github.com/SullyJR/Bills-Tracker
-              cd tenant
-              npm install
-              npm run start
+              exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+              echo "Starting user data script execution"
+
+              sudo apt-get update
+              sudo apt-get install -y nodejs npm mysql-client
+              echo "Packages installed"
+
+              sudo git clone https://github.com/SullyJR/Bills-Tracker /home/ubuntu/Bills-Tracker
+              echo "Repository cloned"
+
+              echo "DB_HOST=${replace(aws_db_instance.mysql.endpoint, ":3306", "")}" >> /home/ubuntu/Bills-Tracker/tenant/.env
+              echo "DB_USER=admin" >> /home/ubuntu/Bills-Tracker/tenant/.env
+              echo "DB_PASSWORD=Password123" >> /home/ubuntu/Bills-Tracker/tenant/.env
+              echo "DB_NAME=myapp" >> /home/ubuntu/Bills-Tracker/tenant/.env
+              echo "Environment variables set"
+
+              cd /home/ubuntu/Bills-Tracker/tenant
+              sudo npm install
+              echo "npm install completed"
+
+              sudo npm run start &
+              echo "npm start initiated"
+
+              echo "User data script completed"
               EOF
 
   tags = {
