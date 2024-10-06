@@ -148,5 +148,5 @@ output "manager_vm_public_ip" {
 }
 
 output "rds_endpoint" {
-  value = aws_db_instance.mysql.endpoint
+  value = replace(aws_db_instance.mysql.endpoint, ":3306", "")
 }
