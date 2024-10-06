@@ -122,6 +122,22 @@ resource "aws_instance" "manager_vm" {
   }
 }
 
+# RDS Instance
+resource "aws_db_instance" "mysql" {
+  engine               = "mysql"
+  engine_version       = "8.0"
+  instance_class       = "db.t3.micro"
+  allocated_storage    = 20
+  identifier           = "mydb"
+  db_name              = "myapp"
+  username             = "admin"
+  password             = "Password123"  # Change this to a strong password
+  skip_final_snapshot  = true
+  publicly_accessible  = true 
+
+  vpc_security_group_ids = [aws_security_group.allow_web_and_ssh.id, aws_security_group.allow_express_backend.id]
+}
+
 # Outputs
 output "tenant_vm_public_ip" {
   value = aws_instance.tenant_vm.public_ip
