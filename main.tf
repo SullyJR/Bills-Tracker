@@ -79,9 +79,9 @@ resource "aws_security_group" "allow_express_backend" {
 
 # EC2 Instances
 resource "aws_instance" "tenant_vm" {
-  ami           = "ami-010e83f579f15bba0"  # Ubuntu AMI, you may need to change this
+  ami           = "ami-010e83f579f15bba0"  
   instance_type = "t2.micro"
-  key_name      = "cosc349-2024"  # This is typically the key name in AWS Academy
+  key_name      = "cosc349-2024" 
 
   vpc_security_group_ids = [aws_security_group.allow_web_and_ssh.id, aws_security_group.allow_express_backend.id]
 
@@ -119,7 +119,7 @@ user_data = <<-EOF
 }
 
 resource "aws_instance" "manager_vm" {
-  ami           = "ami-010e83f579f15bba0"  # Ubuntu AMI, you may need to change this
+  ami           = "ami-010e83f579f15bba0" 
   instance_type = "t2.micro"
   key_name      = "cosc349-2024"
 
@@ -184,13 +184,13 @@ resource "aws_db_instance" "mysql" {
   vpc_security_group_ids = [aws_security_group.allow_web_and_ssh.id, aws_security_group.allow_express_backend.id]
 }
 
-# Outputs
+# Outputs in http link format
 output "tenant_vm_public_ip" {
-  value = aws_instance.tenant_vm.public_ip
+  value = "http://${aws_instance.tenant_vm.public_ip}:3000"
 }
 
 output "manager_vm_public_ip" {
-  value = aws_instance.manager_vm.public_ip
+  value = "http://${aws_instance.manager_vm.public_ip}:3001"
 }
 
 output "rds_endpoint" {
