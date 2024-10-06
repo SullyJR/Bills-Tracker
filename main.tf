@@ -105,17 +105,45 @@ resource "aws_instance" "manager_vm" {
   instance_type = "t2.micro"
   key_name      = "cosc349-2024"
 
-  vpc_security_group_ids = [aws_security_group.allow_web_and_ssh.id]
+  vpc_security_group_ids = [aws_security_group.allow_web_and_ssh.id, aws_security_group.allow_express_backend.id]
 
   user_data = <<-EOF
-              #!/bin/bash
-              apt-get update
-              apt-get install -y nodejs npm mysql-client
-              git clone https://github.com/SullyJR/Bills-Tracker
-              cd manager
-              npm install
-              npm run start
-              EOF
+                #!/bin/bash
+                exec > >(tee /var/log/user-data.log|logger -t user-data -s 2>/dev/console) 2>&1
+                echo "Starting user data script execution"
+
+                sudo apt-get update
+                sudo apt-get install -y nodejs npm mysql-client
+                echo "Packages installed"
+
+                sudo git clone https://github.com/SullyJR/Bills-Tracker /home/ubuntu/Bills-Tracker
+                echo "Repository cloned"
+
+                # Wait for RDS to be ready
+                while ! mysql -h ${replace(aws_db_instance.mysql.endpoint, ":3306", "")} -u admin -p'Password123' -e "SELECT 1" >/dev/null 2>&1; do
+                  echo "Waiting for RDS to be ready..."
+                  sleep 10
+                done
+
+                # Run SQL scripts
+                mysql -h ${replace(aws_db_instance.mysql.endpoint, ":3306", "")} -u admin -p'Password123' myapp < /home/ubuntu/Bills-Tracker/database/schema.sql
+                echo "SQL script executed"
+
+                echo "DB_HOST=${replace(aws_db_instance.mysql.endpoint, ":3306", "")}" >> /home/ubuntu/Bills-Tracker/manager/.env
+                echo "DB_USER=admin" >> /home/ubuntu/Bills-Tracker/manager/.env
+                echo "DB_PASSWORD=Password123" >> /home/ubuntu/Bills-Tracker/manager/.env
+                echo "DB_NAME=myapp" >> /home/ubuntu/Bills-Tracker/manager/.env
+                echo "Environment variables set"
+
+                cd /home/ubuntu/Bills-Tracker/manager
+                sudo npm install
+                echo "npm install completed"
+
+                sudo npm run start &
+                echo "npm start initiated"
+
+                echo "User data script completed"
+                EOF
 
   tags = {
     Name = "AdminVM"
