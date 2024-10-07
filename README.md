@@ -1,25 +1,23 @@
-# COSC349 Assignment 1: Virtualisation - Flat Bills Tracker <!-- omit in toc! -->
+# COSC349 Assignment 2: Cloud Deployment - Flat Bills Tracker
 
-A web application for managing bills and payments in shared living situations, built with a focus on portable deployment through virtualization. This project allows tenants to track their bills and property managers to oversee multiple properties and assign bills to tenants. By leveraging containerization technology, the Flat Bills Tracker ensures consistent performance across various computing environments. 
+A web application for managing bills and payments in shared living situations, now deployed to the cloud using AWS services and Terraform. This project allows tenants to track their bills and property managers to oversee multiple properties and assign bills to tenants. By leveraging cloud technologies, the Flat Bills Tracker ensures scalability and accessibility.
 
-Developed by Anthony Dong (2169260) and Callum Sullivan.
+Developed by Anthony Dong (2169260) and Callum Sullivan (7234739).
 
-# Video Link
-https://youtu.be/v3k8u4zUV0M
-
-## Table of Contents <!-- omit in toc -->
-- [Features](#features)
-- [Technology Stack](#technology-stack)
-- [Project Structure](#project-structure)
-- [Setup and Installation](#setup-and-installation)
-- [Usage](#usage)
-  - [For Tenants:](#for-tenants)
-  - [For Property Managers:](#for-property-managers)
-- [Development](#development)
-  - [Database Modifications:](#database-modifications)
-- [Contributing](#contributing)
-- [License](#license)
-- [Contact](#contact)
+## Table of Contents
+- [COSC349 Assignment 2: Cloud Deployment - Flat Bills Tracker](#cosc349-assignment-2-cloud-deployment---flat-bills-tracker)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Technology Stack](#technology-stack)
+  - [Project Structure](#project-structure)
+  - [Setup and Installation](#setup-and-installation)
+  - [Usage](#usage)
+    - [For Tenants:](#for-tenants)
+    - [For Property Managers:](#for-property-managers)
+  - [Development](#development)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Contact](#contact)
 
 ## Features
 - User authentication through email and password with session management
@@ -42,53 +40,73 @@ https://youtu.be/v3k8u4zUV0M
 
 - Frontend: HTML, CSS, EJS templates
 - Backend: Node.js with Express.js
-- Database: MySQL
-- Containerization: Docker and Docker Compose
+- Database: MySQL (Amazon RDS)
+- Cloud Infrastructure: Amazon Web Services (AWS)
+- Infrastructure as Code: Terraform
+- Serverless Computing: AWS Lambda
 - Version Control: Git
 
 ## Project Structure
 
-The project is organized into three main components:
+The project is now organized into the following main components:
 
-1. Tenant Service: Handles tenant-related functionalities
-2. Manager Service: Manages property manager functionalities
-3. Database Service: MySQL database for data storage
+1. Tenant Service: Deployed on an EC2 instance
+2. Manager Service: Deployed on a separate EC2 instance
+3. Database Service: MySQL database hosted on Amazon RDS
+4. Lambda Function: For periodic database cleanup
 
-Each service runs in its own Docker container, ensuring isolation and easy deployment. The tenant and manager services communicate with each other via the database service. Both services access the database using Express, with API endpoints handling the HTTP requests.
+All infrastructure is managed using Terraform, ensuring consistent and reproducible deployments.
 
 ## Setup and Installation
 
-1. Clone the repository:
+For new developers joining the project:
+
+1. Ensure you have the following prerequisites installed:
+   - Git
+   - Node.js and npm
+   - Terraform
+   - AWS CLI
+
+2. Clone the repository:
    ```
    git clone <repository-url>
-   cd rental
+   cd Bills-Tracker
    ```
 
-2. Ensure Docker and Docker Compose are installed on your system.
-
-3. Build and start the containers:
+3. Install npm dependencies for both services:
    ```
-   docker-compose up --build
-   ```
-   Or on some systems:
-   ```
-   docker compose up build
+   cd tenant && npm install
+   cd ../manager && npm install
+   cd ..
    ```
 
-4. The application will be available at:
-   - Tenant Portal: http://localhost:3000
-   - Manager Portal: http://localhost:3001
+4. Set up AWS credentials:
+   - Ensure you have valid AWS credentials in `~/.aws/credentials`
+
+5. Initialize Terraform:
+   ```
+   cd terraform
+   terraform init
+   ```
+
+6. Plan and apply the Terraform configuration:
+   ```
+   terraform plan
+   terraform apply
+   ```
+
+7. After successful deployment, Terraform will output the URLs for the tenant and manager portals.
 
 ## Usage
 
 ### For Tenants:
-1. Navigate to http://localhost:3000
+1. Navigate to the tenant portal URL provided in the Terraform output
 2. Register a new account or log in
 3. Select your property
 4. Add and manage your bills
 
 ### For Property Managers:
-1. Navigate to http://localhost:3001
+1. Navigate to the manager portal URL provided in the Terraform output
 2. Register a new account or log in
 3. Add properties and manage tenants
 4. Assign bills to properties or individual tenants
@@ -98,37 +116,27 @@ Each service runs in its own Docker container, ensuring isolation and easy deplo
 To modify the application:
 
 1. Make changes to the relevant files in the `tenant` or `manager` directories.
-2. Rebuild the Docker containers:
+2. If you've made changes to the infrastructure, update the Terraform files accordingly.
+3. Apply the changes:
    ```
-   docker-compose down -v
-   docker-compose up --build
+   terraform plan
+   terraform apply
    ```
-    Or on some systems:
 
-    ```
-    docker compose down -v
-    docker compose up --build
-    ```
-    
-    If a user wishes to maintain the state of the system:
-    ```
-    docker-compose down
-    docker-compose up --build
-    ```
+To access the RDS database for debugging:
+1. Ensure you have MySQL client installed locally
+2. Use the RDS endpoint provided in the Terraform output:
+   ```
+   mysql -h <rds-endpoint> -u admin -p
+   ```
+   Enter the database password when prompted.
 
-### Database Modifications:
-- Update the schema in `schema.sql`
-- Modify the `data.sql` file for any changes to the initial test data
-- Run the following command from a terminal in the project directory to access the database for debugging purposes:
-  ```
-  docker-compose exec db mysql -u root -p
-  ```
-    Enter the password `rootpassword` when prompted.
-
-- To view the database tables, run:
-- `use DB;` to select the database
-- `show tables;` to list all tables
-- `SELECT * FROM <table-name>` to list the details of the table-name
+3. Once connected, you can run SQL commands to view or modify the database:
+   ```
+   USE myapp;
+   SHOW TABLES;
+   SELECT * FROM <table-name>;
+   ```
 
 ## Contributing
 
@@ -139,6 +147,8 @@ We welcome contributions to improve the Flat Bills Tracker. Please follow these 
 3. Commit your changes
 4. Push to your branch
 5. Create a new Pull Request
+
+Ensure that any infrastructure changes are reflected in the Terraform configuration.
 
 ## License
 
