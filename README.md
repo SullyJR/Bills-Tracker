@@ -5,7 +5,7 @@ A web application for managing bills and payments in shared living situations, b
 Developed by Anthony Dong (2169260) and Callum Sullivan (7234749).
 
 # Video Link
-https://youtu.be/v3k8u4zUV0M
+[https://youtu.be/v3k8u4zUV0M](https://youtu.be/XUMOO8eKGAQ)
 
 ## Table of Contents <!-- omit in toc -->
 - [Features](#features)
