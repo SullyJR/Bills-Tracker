@@ -1,16 +1,4 @@
-import nodemailer from 'nodemailer';
 import mysql from 'mysql2/promise';
-
-// Create transporter using Outlook SMTP settings
-const transporter = nodemailer.createTransport({
-  host: 'smtp-mail.outlook.com',
-  port: 587, // Use 587 for TLS
-  secure: false, // false for STARTTLS (recommended for Outlook)
-  auth: {
-    user: 'COSC349.FlatBills@outlook.com', // your Outlook email
-    pass: 'Password2024' // your Outlook password
-  }
-});
 
 export const handler = async (event) => {
   let connection;
@@ -23,38 +11,42 @@ export const handler = async (event) => {
     });
     console.log('Database connection successful');
 
-    const [results] = await connection.execute(
-      'SELECT * FROM Bill WHERE due_date BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 30 DAY)'
-    );
+    // Begin transaction
+    await connection.beginTransaction();
 
-    console.log('Upcoming bills:', JSON.stringify(results));
+    // Move old, paid bills to archive
+    const [archiveResult] = await connection.execute(`
+      INSERT INTO ArchivedBill (original_bill_id, bill_type, amount, due_date, paid_date, user_id, property_id)
+      SELECT bill_id, bill_type, amount, due_date, paid_date, user_id, property_id
+      FROM Bill
+      WHERE paid = TRUE AND paid_date < DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+    `);
 
-    if (results.length > 0) {
-      const emailContent = results.map(bill =>
-        `Bill: ${bill.description}, Amount: $${bill.amount}, Due: ${bill.due_date}`
-      ).join('\n');
+    console.log(`Archived ${archiveResult.affectedRows} bills`);
 
-      await transporter.sendMail({
-        from: 'COSC349.FlatBills@outlook.com',
-        to: 'callumsu2003@gmail.com', // Replace with actual tenant email
-        subject: 'Upcoming Bill Reminders',
-        text: `You have the following bills due soon:\n\n${emailContent}`
-      });
+    // Delete the archived bills from the main table
+    const [deleteResult] = await connection.execute(`
+      DELETE FROM Bill
+      WHERE paid = TRUE AND paid_date < DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+    `);
 
-      console.log('Reminder email sent successfully');
-    } else {
-      console.log('No upcoming bills found');
-    }
+    console.log(`Deleted ${deleteResult.affectedRows} old bills`);
 
-    return { 
-      statusCode: 200, 
-      body: JSON.stringify(`Processed ${results.length} upcoming bills`) 
+    // Commit the transaction
+    await connection.commit();
+
+    return {
+      statusCode: 200,
+      body: JSON.stringify(`Archived and deleted ${deleteResult.affectedRows} old bills`)
     };
   } catch (error) {
+    if (connection) {
+      await connection.rollback();
+    }
     console.error('Error:', error);
-    return { 
-      statusCode: 500, 
-      body: JSON.stringify('Error processing bills') 
+    return {
+      statusCode: 500,
+      body: JSON.stringify('Error during database cleanup')
     };
   } finally {
     if (connection) await connection.end();
