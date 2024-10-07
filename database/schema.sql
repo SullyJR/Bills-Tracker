@@ -47,6 +47,18 @@ CREATE TABLE Bill (
     FOREIGN KEY (property_id) REFERENCES Property(property_id)
 );
 
+CREATE TABLE ArchivedBill (
+    archived_bill_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    original_bill_id INT NOT NULL,
+    bill_type VARCHAR(255) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    due_date DATE NOT NULL,
+    paid_date DATE NOT NULL,
+    user_id INT NOT NULL,
+    property_id INT NOT NULL,
+    archived_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 -- Insert test data into PropertyManager table
 INSERT INTO PropertyManager (first_name, last_name, email, manager_password, phone_number, company) VALUES
