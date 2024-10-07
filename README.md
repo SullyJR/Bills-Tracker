@@ -19,7 +19,7 @@ Developed by Anthony Dong (2169260) and Callum Sullivan (7234749).
   - [Contact](#contact)
 
 # Video Link
-[https://youtu.be/v3k8u4zUV0M](https://youtu.be/XUMOO8eKGAQ)
+https://youtu.be/XUMOO8eKGAQ
 
 ## Features
 - User authentication through email and password with session management
