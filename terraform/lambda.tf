@@ -1,9 +1,9 @@
 resource "aws_lambda_function" "db_cleanup" {
-  filename         = "lambda/LambdaCode.zip"
+  filename         = "../lambda/LambdaCode.zip"
   function_name    = "DbCleanupFunction"
   role             = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/LabRole"
   handler          = "index.handler"
-  source_code_hash = filebase64sha256("lambda/LambdaCode.zip")
+  source_code_hash = filebase64sha256("../lambda/LambdaCode.zip")
   runtime          = "nodejs20.x"
   timeout          = 60
   memory_size      = 128
