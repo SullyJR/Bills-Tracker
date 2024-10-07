@@ -1,14 +1,10 @@
-# COSC349 Assignment 2: Cloud Deployment - Flat Bills Tracker <!-- omit in toc! -->
+# COSC349 Assignment 2: Cloud Deployment - Flat Bills Tracker <!-- omit in toc -->
 
 A web application for managing bills and payments in shared living situations, now deployed to the cloud using AWS services and Terraform. This project allows tenants to track their bills and property managers to oversee multiple properties and assign bills to tenants. By leveraging cloud technologies, the Flat Bills Tracker ensures scalability and accessibility.
 
 Developed by Anthony Dong (2169260) and Callum Sullivan (7234749).
 
-# Video Link
-[https://youtu.be/v3k8u4zUV0M](https://youtu.be/XUMOO8eKGAQ)
-
 ## Table of Contents <!-- omit in toc -->
-- [COSC349 Assignment 2: Cloud Deployment - Flat Bills Tracker ](#cosc349-assignment-2-cloud-deployment---flat-bills-tracker-)
 - [Video Link](#video-link)
   - [Features](#features)
   - [Technology Stack](#technology-stack)
@@ -21,6 +17,9 @@ Developed by Anthony Dong (2169260) and Callum Sullivan (7234749).
   - [Contributing](#contributing)
   - [License](#license)
   - [Contact](#contact)
+
+# Video Link
+[https://youtu.be/v3k8u4zUV0M](https://youtu.be/XUMOO8eKGAQ)
 
 ## Features
 - User authentication through email and password with session management
