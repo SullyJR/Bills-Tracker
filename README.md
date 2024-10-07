@@ -1,8 +1,8 @@
-# COSC349 Assignment 1: Virtualisation - Flat Bills Tracker <!-- omit in toc! -->
+# COSC349 Assignment 2: Cloud Deployment - Flat Bills Tracker <!-- omit in toc! -->
 
-A web application for managing bills and payments in shared living situations, built with a focus on portable deployment through virtualization. This project allows tenants to track their bills and property managers to oversee multiple properties and assign bills to tenants. By leveraging containerization technology, the Flat Bills Tracker ensures consistent performance across various computing environments. 
+A web application for managing bills and payments in shared living situations, built with a focus on deployment through cloud. This project allows tenants to track their bills and property managers to oversee multiple properties and assign bills to tenants. By leveraging containerization technology, the Flat Bills Tracker ensures consistent performance across various computing environments. 
 
-Developed by Anthony Dong (2169260) and Callum Sullivan.
+Developed by Anthony Dong (2169260) and Callum Sullivan (7234749).
 
 # Video Link
 https://youtu.be/v3k8u4zUV0M
